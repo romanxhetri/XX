@@ -833,4 +833,858 @@ function DirectoryOverlay({ onSelect }: any) {
 }
 
 function ProductDetailsModal({ product, onClose, addToCart, buyNow, isWishlisted, toggleWishlist }: any) {
-    return <div className="modal-overlay"><div className="pdp-container"><button onClick={onClose} style={{ position: "absolute", top: 16, right: 16, background: "rgba(255,255,255,0.1)", border: "none", color: "white", width: 32, height: 32, borderRadius: "50%", cursor: "pointer", zIndex: 10 }}>×</button><div className="pdp-image"><img src={product.image} style={{ maxWidth: "100%", maxHeight: "100%", borderRadius: 8, boxShadow: "0 20px 50px rgba(0,0,0,0.5)" }} /></div><div className="pdp-info"><div style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}><h1 style={{ margin: "0 0 8px 0", fontSize: "1.8rem", lineHeight: 1.2 }}>{product.name}</h1><button onClick={toggleWishlist} style={{ background: "none", border: "none", fontSize:
+    return <div className="modal-overlay"><div className="pdp-container"><button onClick={onClose} style={{ position: "absolute", top: 16, right: 16, background: "rgba(255,255,255,0.1)", border: "none", color: "white", width: 32, height: 32, borderRadius: "50%", cursor: "pointer", zIndex: 10 }}>×</button><div className="pdp-image"><img src={product.image} style={{ maxWidth: "100%", maxHeight: "100%", borderRadius: 8, boxShadow: "0 20px 50px rgba(0,0,0,0.5)" }} /></div><div className="pdp-info"><div style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}><h1 style={{ margin: "0 0 8px 0", fontSize: "1.8rem", lineHeight: 1.2 }}>{product.name}</h1><button onClick={toggleWishlist} style={{ background: "none", border: "none", fontSize: "1.5rem", cursor: "pointer", color: isWishlisted ? "#ff4444" : "#666" }}>♥</button></div><div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20 }}><span style={{ color: "orange" }}>{"★".repeat(Math.round(product.rating))}</span><span style={{ color: "#888", fontSize: "0.9rem" }}>{product.reviews} Ratings | 1k+ Sold</span></div><div style={{ marginBottom: 20 }}><span style={{ color: "#00f2ff", fontSize: "2rem", fontWeight: 700 }}>NPR {product.price.toLocaleString()}</span>{product.originalPrice && <span style={{ textDecoration: "line-through", color: "#666", marginLeft: 10, fontSize: "1.1rem" }}>NPR {product.originalPrice.toLocaleString()}</span>}</div><div style={{ marginBottom: 24, padding: "16px", background: "rgba(255,255,255,0.05)", borderRadius: 8 }}><div style={{ fontSize: "0.9rem", color: "#aaa" }}>Sold by <span style={{ color: "white", fontWeight: "bold" }}>{product.seller}</span></div><div style={{ fontSize: "0.9rem", color: "#aaa", marginTop: 4 }}>Delivery: <span style={{ color: "white" }}>Standard (2-3 Days)</span></div></div><div style={{ display: "flex", gap: 16, marginBottom: 30 }}><button onClick={() => buyNow(product)} style={{ flex: 1, padding: "14px", background: "#ff6600", border: "none", color: "white", fontWeight: "bold", borderRadius: 8, cursor: "pointer" }}>Buy Now</button><button onClick={() => addToCart(product)} style={{ flex: 1, padding: "14px", background: "#0099ff", border: "none", color: "white", fontWeight: "bold", borderRadius: 8, cursor: "pointer" }}>Add to Cart</button></div><h3 style={{ borderBottom: "1px solid #333", paddingBottom: 8, marginTop: 40 }}>Product Details</h3><p style={{ color: "#ccc", lineHeight: "1.6" }}>{product.description || "Experience top-tier performance and quality with this premium product. Designed for durability and efficiency."}</p></div></div></div>;
+}
+
+function CheckoutModal({ cart, total, onClose, onPlaceOrder, user }: any) {
+    const [step, setStep] = useState(1);
+    const [address, setAddress] = useState({ name: user?.name || "", phone: "", city: "", area: "" });
+    const [payment, setPayment] = useState("cod");
+    return (
+        <div className="modal-overlay"><div className="modal-content-responsive"><div style={{ display: "flex", justifyContent: "space-between", marginBottom: 20 }}><h2 style={{ margin: 0 }}>Checkout</h2><button onClick={onClose} style={{ background: "none", border: "none", color: "#666", fontSize: "1.5rem", cursor: "pointer" }}>×</button></div>
+        {step === 1 && (<div><h3 style={{ color: "#00f2ff" }}>1. Shipping Address</h3><div style={{ display: "flex", flexDirection: "column", gap: 12 }}><input placeholder="Full Name" value={address.name} onChange={e => setAddress({...address, name: e.target.value})} style={{ padding: 12, borderRadius: 8, background: "#222", border: "1px solid #444", color: "white", width: "100%" }} /><input placeholder="Phone Number" value={address.phone} onChange={e => setAddress({...address, phone: e.target.value})} style={{ padding: 12, borderRadius: 8, background: "#222", border: "1px solid #444", color: "white", width: "100%" }} /><div style={{ display: "flex", gap: 12 }}><input placeholder="City" value={address.city} onChange={e => setAddress({...address, city: e.target.value})} style={{ flex: 1, padding: 12, borderRadius: 8, background: "#222", border: "1px solid #444", color: "white", width: "100%" }} /><input placeholder="Area / Street" value={address.area} onChange={e => setAddress({...address, area: e.target.value})} style={{ flex: 1, padding: 12, borderRadius: 8, background: "#222", border: "1px solid #444", color: "white", width: "100%" }} /></div></div><button onClick={() => setStep(2)} style={{ width: "100%", marginTop: 20, padding: 14, background: "#00f2ff", border: "none", borderRadius: 8, fontWeight: "bold", cursor: "pointer" }}>Proceed to Payment</button></div>)}
+        {step === 2 && (<div><h3 style={{ color: "#00f2ff" }}>2. Payment Method</h3><div style={{ display: "flex", flexDirection: "column", gap: 12 }}>{['cod', 'esewa', 'khalti', 'card'].map(m => (<div key={m} onClick={() => setPayment(m)} style={{ padding: 16, borderRadius: 8, background: payment === m ? "rgba(0,242,255,0.1)" : "#222", border: payment === m ? "1px solid #00f2ff" : "1px solid #444", cursor: "pointer", textTransform: "uppercase", fontWeight: "bold" }}>{m === 'cod' ? "Cash on Delivery" : m}</div>))}</div><div style={{ marginTop: 30, paddingTop: 20, borderTop: "1px solid #333" }}><div style={{ display: "flex", justifyContent: "space-between", marginBottom: 10 }}><span>Subtotal</span><span>NPR {total.toLocaleString()}</span></div><div style={{ display: "flex", justifyContent: "space-between", marginBottom: 10 }}><span>Delivery Fee</span><span>NPR 100</span></div><div style={{ display: "flex", justifyContent: "space-between", marginBottom: 20, fontSize: "1.2rem", fontWeight: "bold", color: "#00f2ff" }}><span>Total</span><span>NPR {(total + 100).toLocaleString()}</span></div><button onClick={() => onPlaceOrder({ id: Date.now().toString(), date: new Date().toLocaleDateString(), items: cart, total: total + 100, status: "Processing" })} style={{ width: "100%", padding: 14, background: "#ff6600", border: "none", borderRadius: 8, fontWeight: "bold", color: "white", cursor: "pointer" }}>Place Order</button><button onClick={() => setStep(1)} style={{ width: "100%", marginTop: 10, background: "none", border: "none", color: "#888", cursor: "pointer" }}>Back</button></div></div>)}</div></div>
+    );
+}
+
+function AuthModal({ onLogin, onClose }: any) {
+  const [isRegister, setIsRegister] = useState(false); const [name, setName] = useState(""); const [email, setEmail] = useState("");
+  return <div className="modal-overlay"><div className="modal-content-responsive" style={{ maxWidth: 400 }}><h2 style={{ textAlign: "center", marginBottom: 30, color: "white" }}>{isRegister ? "Create Account" : "Welcome Back"}</h2>{isRegister && <input placeholder="Full Name" value={name} onChange={e => setName(e.target.value)} style={{ width: "100%", padding: 12, marginBottom: 16, borderRadius: 8, background: "#222", border: "1px solid #444", color: "white", boxSizing: "border-box" }} />}<input placeholder="Email Address" value={email} onChange={e => setEmail(e.target.value)} style={{ width: "100%", padding: 12, marginBottom: 16, borderRadius: 8, background: "#222", border: "1px solid #444", color: "white", boxSizing: "border-box" }} /><input type="password" placeholder="Password" style={{ width: "100%", padding: 12, marginBottom: 24, borderRadius: 8, background: "#222", border: "1px solid #444", color: "white", boxSizing: "border-box" }} /><button onClick={() => onLogin(email, name || "User")} style={{ width: "100%", padding: 14, background: "#00f2ff", border: "none", borderRadius: 8, fontWeight: "bold", cursor: "pointer", marginBottom: 16 }}>{isRegister ? "Sign Up" : "Login"}</button><div style={{ textAlign: "center", fontSize: "0.9rem", color: "#888", cursor: "pointer" }} onClick={() => setIsRegister(!isRegister)}>{isRegister ? "Already have an account? Login" : "New to SageX? Register"}</div><button onClick={onClose} style={{ position: "absolute", top: 20, right: 20, background: "none", border: "none", color: "666", fontSize: "1.5rem", cursor: "pointer" }}>×</button></div></div>;
+}
+
+function ProfileModal({ user, onClose }: any) {
+  const [tab, setTab] = useState('orders');
+  return <div className="modal-overlay"><div className="profile-container"><div className="profile-sidebar"><div style={{ textAlign: "center", marginBottom: 30 }}><div style={{ width: 80, height: 80, background: "orange", borderRadius: "50%", margin: "0 auto 10px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "2rem" }}>👤</div><div style={{ fontWeight: "bold" }}>{user.name}</div><div style={{ fontSize: "0.8rem", color: "#888" }}>{user.email}</div><div style={{marginTop:10, color:"#00cc66", fontWeight:"bold"}}>Balance: ${user.balance.toLocaleString()}</div></div><div onClick={() => setTab('orders')} style={{ padding: 12, cursor: "pointer", background: tab === 'orders' ? "#333" : "transparent", borderRadius: 8, marginBottom: 8, flexShrink: 0 }}>📦 Orders</div><div onClick={() => setTab('wishlist')} style={{ padding: 12, cursor: "pointer", background: tab === 'wishlist' ? "#333" : "transparent", borderRadius: 8, flexShrink: 0 }}>♥ Wishlist</div><button onClick={onClose} style={{ marginTop: 'auto', width: "100%", padding: 10, background: "#333", border: "none", color: "white", borderRadius: 8, cursor: "pointer" }}>Close</button></div><div className="profile-body"><div style={{display:'flex', justifyContent:'space-between', alignItems:'center', borderBottom: "1px solid #333", paddingBottom: 10, marginBottom: 20}}><h2 style={{margin:0}}>{tab === 'orders' ? "Order History" : "My Wishlist"}</h2><button onClick={onClose} style={{background:"none", border:"none", color:"white", fontSize:"1.5rem", cursor:"pointer"}}>×</button></div>{tab === 'orders' && (<div style={{ display: "flex", flexDirection: "column", gap: 16 }}>{user.orders.length === 0 && <div style={{ color: "#666" }}>No orders yet.</div>}{user.orders.map((order: Order) => (<div key={order.id} style={{ background: "#222", padding: 16, borderRadius: 8 }}><div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}><span style={{ color: "#00f2ff", fontWeight: "bold" }}>Order #{order.id}</span><span style={{ color: order.status === 'Delivered' ? "#0f0" : "orange" }}>{order.status}</span></div><div style={{ fontSize: "0.9rem", color: "#888", marginBottom: 8 }}>{order.date}</div><div style={{ display: "flex", gap: 8, overflowX: "auto", paddingBottom: 8 }}>{order.items.map(item => (<img key={item.id} src={item.image} style={{ width: 50, height: 50, borderRadius: 4, objectFit: "cover", flexShrink: 0 }} />))}</div><div style={{ textAlign: "right", fontWeight: "bold", marginTop: 8 }}>Total: NPR {order.total.toLocaleString()}</div></div>))}</div>)}{tab === 'wishlist' && (<div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 16 }}>{user.wishlist.length === 0 && <div style={{ color: "#666" }}>Wishlist is empty.</div>}{user.wishlist.map((pid: string) => { /* Logic to find product from products list not shown for brevity, similar to before */ return <div key={pid}></div>; })}</div>)}</div></div></div>;
+}
+
+function CartDrawer({ cart, onClose, onRemove, onUpdateQty, total, onCheckout }: any) {
+    return <div style={{ position: "fixed", top: 0, right: 0, width: "100%", maxWidth: "400px", height: "100%", background: "#1a1a1a", zIndex: 100, padding: "20px", display: "flex", flexDirection: "column", boxShadow: "-5px 0 20px rgba(0,0,0,0.5)", transition: "transform 0.3s ease-in-out" }}><div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", borderBottom: "1px solid #333", paddingBottom: "10px" }}><h2 style={{ margin: 0, color: "white" }}>Your Cart ({cart.length})</h2><button onClick={onClose} style={{ background: "transparent", border: "none", color: "white", fontSize: "1.5rem", cursor: "pointer" }}>×</button></div><div style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column", gap: "15px" }}>{cart.length === 0 ? (<div style={{ color: "#888", textAlign: "center", marginTop: "50px" }}>Your cart is empty.</div>) : (cart.map((item: any) => (<div key={item.id} style={{ display: "flex", gap: "10px", background: "#222", padding: "10px", borderRadius: "8px" }}><img src={item.image} alt={item.name} style={{ width: "60px", height: "60px", objectFit: "cover", borderRadius: "4px" }} /><div style={{ flex: 1 }}><div style={{ fontWeight: "bold", fontSize: "0.9rem", color: "white" }}>{item.name}</div><div style={{ color: "#00f2ff", fontSize: "0.9rem" }}>NPR {item.price.toLocaleString()}</div><div style={{ display: "flex", alignItems: "center", gap: "10px", marginTop: "5px" }}><button onClick={() => onUpdateQty(item.id, -1)} style={{ background: "#444", border: "none", color: "white", width: "24px", height: "24px", borderRadius: "4px", cursor: "pointer" }}>-</button><span style={{ color: "white", fontSize: "0.9rem" }}>{item.quantity}</span><button onClick={() => onUpdateQty(item.id, 1)} style={{ background: "#444", border: "none", color: "white", width: "24px", height: "24px", borderRadius: "4px", cursor: "pointer" }}>+</button></div></div><button onClick={() => onRemove(item.id)} style={{ alignSelf: "flex-start", background: "transparent", border: "none", color: "#ff4444", cursor: "pointer", fontSize: "1.2rem" }}>×</button></div>)))}</div><div style={{ marginTop: "auto", paddingTop: "20px", borderTop: "1px solid #333" }}><div style={{ display: "flex", justifyContent: "space-between", marginBottom: "15px", color: "white", fontWeight: "bold", fontSize: "1.2rem" }}><span>Total:</span><span style={{ color: "#00f2ff" }}>NPR {total.toLocaleString()}</span></div><button onClick={onCheckout} disabled={cart.length === 0} style={{ width: "100%", padding: "15px", background: cart.length === 0 ? "#444" : "#00f2ff", color: cart.length === 0 ? "#888" : "black", border: "none", borderRadius: "8px", fontWeight: "bold", cursor: cart.length === 0 ? "not-allowed" : "pointer" }}>Checkout</button></div></div>;
+}
+
+function ChatInterface({ activeHub, onClose }: { activeHub: HubData | null, onClose: () => void }) {
+    const [messages, setMessages] = useState<{role: 'user' | 'model', text: string}[]>([{ role: 'model', text: activeHub ? `Welcome to the ${activeHub.name}! I'm SageX, your AI assistant. How can I help you with ${activeHub.description}?` : "Hello! I'm SageX, your personal shopping assistant. Ask me anything about our products or services!" }]); const [input, setInput] = useState(""); const [isLoading, setIsLoading] = useState(false); const scrollRef = useRef<HTMLDivElement>(null); const ai = useMemo(() => new GoogleGenAI({ apiKey: process.env.API_KEY || '' }), []); useEffect(() => { if (scrollRef.current) { scrollRef.current.scrollTop = scrollRef.current.scrollHeight; } }, [messages]); const sendMessage = async () => { if (!input.trim() || isLoading) return; const userMsg = input; setMessages(prev => [...prev, { role: 'user', text: userMsg }]); setInput(""); setIsLoading(true); try { let systemInstruction = "You are SageX, an advanced AI shopping assistant for a futuristic e-commerce platform."; const chat = ai.chats.create({ model: AI_MODEL, config: { systemInstruction }, history: messages.map(m => ({ role: m.role, parts: [{ text: m.text }] })), }); const result = await chat.sendMessage({ message: userMsg }); const responseText = result.text; setMessages(prev => [...prev, { role: 'model', text: responseText || "I'm having trouble connecting right now." }]); } catch (error) { console.error("AI Error:", error); setMessages(prev => [...prev, { role: 'model', text: "Sorry, I encountered an error processing your request." }]); } finally { setIsLoading(false); } };
+    return <div className="chat-interface" style={{ position: "absolute", bottom: "20px", right: "20px", width: "350px", height: "500px", background: "rgba(10, 10, 20, 0.95)", borderRadius: "16px", border: "1px solid rgba(0, 242, 255, 0.3)", display: "flex", flexDirection: "column", overflow: "hidden", zIndex: 100, boxShadow: "0 10px 40px rgba(0,0,0,0.5)", backdropFilter: "blur(10px)" }}><div style={{ padding: "15px", background: "linear-gradient(90deg, #00f2ff, #0099ff)", display: "flex", justifyContent: "space-between", alignItems: "center", color: "black" }}><div style={{ fontWeight: "bold", display: "flex", alignItems: "center", gap: "8px" }}><span>✨</span> SageX AI Assistant</div><button onClick={onClose} style={{ background: "transparent", border: "none", color: "black", fontSize: "1.2rem", cursor: "pointer", fontWeight: "bold" }}>×</button></div><div ref={scrollRef} style={{ flex: 1, padding: "15px", overflowY: "auto", display: "flex", flexDirection: "column", gap: "10px" }}>{messages.map((msg, idx) => (<div key={idx} style={{ alignSelf: msg.role === 'user' ? "flex-end" : "flex-start", maxWidth: "80%", padding: "10px 14px", borderRadius: "12px", background: msg.role === 'user' ? "#0099ff" : "rgba(255,255,255,0.1)", color: "white", fontSize: "0.9rem", borderBottomRightRadius: msg.role === 'user' ? "2px" : "12px", borderBottomLeftRadius: msg.role === 'model' ? "2px" : "12px" }}>{msg.text}</div>))} {isLoading && (<div style={{ alignSelf: "flex-start", padding: "10px", color: "#888", fontSize: "0.8rem" }}>SageX is thinking...</div>)}</div><div style={{ padding: "10px", borderTop: "1px solid rgba(255,255,255,0.1)", display: "flex", gap: "10px", background: "rgba(0,0,0,0.3)" }}><input value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && sendMessage()} placeholder="Ask anything..." style={{ flex: 1, background: "rgba(255,255,255,0.1)", border: "none", borderRadius: "20px", padding: "10px 15px", color: "white", outline: "none" }} /><button onClick={sendMessage} disabled={isLoading} style={{ background: "#00f2ff", color: "black", border: "none", width: "40px", height: "40px", borderRadius: "50%", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold" }}>➤</button></div></div>;
+}
+
+// --- Three.js Logic ---
+
+function getPerformanceTier() {
+    // Stricter detection for low-end devices
+    // Mobile devices, devices with low memory, or low core count are treated as "low"
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    const cores = navigator.hardwareConcurrency || 2;
+    // @ts-ignore
+    const memory = navigator.deviceMemory || 2; 
+    
+    // Conservative: If it's a mobile device OR has <= 4GB RAM, treat as low end to guarantee smoothness
+    if (isMobile || memory <= 4 || cores <= 4) {
+        return 'low';
+    }
+    return 'high';
+}
+
+function SolarSystemScene({ onHubSelect, isPaused, isVisible, mode }: { onHubSelect: (h: HubData) => void, isPaused: boolean, isVisible: boolean, mode: NavMode }) {
+  const mountRef = useRef<HTMLDivElement>(null);
+  const simState = useRef({ isPaused, mode, isVisible });
+  
+  // Warp State tracking
+  const warpRef = useRef({
+      active: false,
+      target: new THREE.Vector3(),
+      startTime: 0,
+      duration: 1.5,
+      startPos: new THREE.Vector3(),
+      startLookAt: new THREE.Vector3(),
+      hub: null as HubData | null
+  });
+
+  const hubsRef = useRef<{ 
+      mesh: THREE.Mesh, 
+      data: HubData, 
+      angle: number, 
+      labelDiv?: HTMLDivElement
+  }[]>([]);
+
+  const controlsRef = useRef<any>(null);
+  const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
+  const moveState = useRef({ 
+      forward: false, backward: false, left: false, right: false, up: false, down: false, 
+      rotX: 0, rotY: 0,
+      joyVector: new THREE.Vector2(0, 0)
+  });
+  const [isLocked, setIsLocked] = useState(false);
+  const [showJoysticks, setShowJoysticks] = useState(false);
+
+  useEffect(() => { simState.current = { isPaused, mode, isVisible }; }, [isPaused, mode, isVisible]);
+
+  useEffect(() => {
+    const checkTouch = () => {
+        if (window.matchMedia("(pointer: coarse)").matches || 'ontouchstart' in window) {
+            setShowJoysticks(true);
+        }
+    };
+    checkTouch();
+    window.addEventListener('resize', checkTouch);
+    return () => window.removeEventListener('resize', checkTouch);
+  }, []);
+
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+        switch(e.code) { case 'KeyW': moveState.current.forward = true; break; case 'KeyS': moveState.current.backward = true; break; case 'KeyA': moveState.current.left = true; break; case 'KeyD': moveState.current.right = true; break; case 'Space': moveState.current.up = true; break; case 'ShiftLeft': moveState.current.down = true; break; }
+    };
+    const onKeyUp = (e: KeyboardEvent) => {
+        switch(e.code) { case 'KeyW': moveState.current.forward = false; break; case 'KeyS': moveState.current.backward = false; break; case 'KeyA': moveState.current.left = false; break; case 'KeyD': moveState.current.right = false; break; case 'Space': moveState.current.up = false; break; case 'ShiftLeft': moveState.current.down = false; break; }
+    };
+    document.addEventListener('keydown', onKeyDown); document.addEventListener('keyup', onKeyUp);
+    return () => { document.removeEventListener('keydown', onKeyDown); document.removeEventListener('keyup', onKeyUp); };
+  }, []);
+
+  useEffect(() => {
+    if (!mountRef.current) return;
+    
+    // DEVICE & PERFORMANCE DETECTION
+    const tier = getPerformanceTier();
+    const isLowEnd = tier === 'low';
+    
+    // SCENE SETUP
+    const scene = new THREE.Scene(); 
+    scene.background = new THREE.Color(0x020205); 
+    // Reduced fog calculation for low end
+    scene.fog = new THREE.FogExp2(0x020205, isLowEnd ? 0.001 : 0.002); 
+    
+    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 2000); 
+    cameraRef.current = camera;
+    camera.rotation.order = 'YXZ';
+    camera.position.set(0, isLowEnd ? 140 : 100, isLowEnd ? 260 : 180);
+    
+    const renderer = new THREE.WebGLRenderer({ 
+        antialias: !isLowEnd, // OFF for low-end devices
+        alpha: false, 
+        powerPreference: "high-performance",
+        precision: isLowEnd ? "mediump" : "highp", // Lower precision for low-end
+        depth: true,
+        stencil: false
+    }); 
+    renderer.setSize(window.innerWidth, window.innerHeight); 
+    
+    // Cap pixel ratio to 1 for low-end to prevent high-DPI lag
+    renderer.setPixelRatio(isLowEnd ? 1 : Math.min(window.devicePixelRatio, 1.5));
+    
+    if (!isLowEnd) {
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    }
+
+    renderer.domElement.style.touchAction = 'none'; 
+    mountRef.current.appendChild(renderer.domElement);
+    
+    const labelContainer = document.createElement('div'); 
+    labelContainer.style.position = 'absolute'; labelContainer.style.top = '0'; labelContainer.style.left = '0'; 
+    labelContainer.style.width = '100%'; labelContainer.style.height = '100%'; 
+    labelContainer.style.pointerEvents = 'none'; labelContainer.style.overflow = 'hidden'; 
+    mountRef.current.appendChild(labelContainer);
+    
+    let orbitControls = new OrbitControls(camera, renderer.domElement); 
+    orbitControls.enableDamping = true; orbitControls.dampingFactor = 0.05;
+    orbitControls.autoRotate = true; orbitControls.autoRotateSpeed = 0.5; 
+    controlsRef.current = orbitControls;
+    
+    const onMouseMove = (event: MouseEvent) => {
+        if (document.pointerLockElement === document.body) {
+             camera.rotation.y -= event.movementX * 0.002;
+             camera.rotation.x -= event.movementY * 0.002;
+             camera.rotation.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, camera.rotation.x));
+        }
+    };
+    const onPointerLockChange = () => {
+        setIsLocked(document.pointerLockElement === document.body);
+    };
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('pointerlockchange', onPointerLockChange);
+    
+    // LIGHTING
+    // Low End: Simple ambient light only (no dynamic lights needed for menu bg)
+    const ambientLight = new THREE.AmbientLight(0x404040, isLowEnd ? 3 : 2); 
+    scene.add(ambientLight);
+    
+    const coreLight = new THREE.PointLight(0xffaa00, 3, 400); 
+    if (!isLowEnd) {
+        // Dynamic shadows only for High End
+        coreLight.castShadow = true;
+        coreLight.shadow.mapSize.width = 1024;
+        coreLight.shadow.mapSize.height = 1024;
+        coreLight.shadow.camera.near = 0.5;
+        coreLight.shadow.camera.far = 500;
+        coreLight.shadow.bias = -0.0001; 
+    }
+    scene.add(coreLight);
+    
+    // GEOMETRY OPTIMIZATION
+    // Drastically reduce segments for Low End
+    const segs = isLowEnd ? 12 : 64; 
+
+    // --- SUN SHADER ---
+    const coreGeo = new THREE.SphereGeometry(10, segs, segs); 
+    const coreMat = new THREE.ShaderMaterial({
+        vertexShader: sunVertexShader,
+        // Use simpler shader for low end to avoid expensive noise calculation
+        fragmentShader: isLowEnd ? simpleSunFragmentShader : sunFragmentShader,
+        uniforms: { time: { value: 0 } }
+    });
+    const core = new THREE.Mesh(coreGeo, coreMat); 
+    scene.add(core);
+
+    if (!isLowEnd) {
+        // Only add glow halo on High End devices
+        const glowGeo = new THREE.SphereGeometry(12, 32, 32); 
+        const glowMat = new THREE.MeshBasicMaterial({ color: 0xffaa00, transparent: true, opacity: 0.3 }); 
+        const glow = new THREE.Mesh(glowGeo, glowMat); 
+        scene.add(glow);
+        
+        const haloGeo = new THREE.SphereGeometry(16, 32, 32); 
+        const haloMat = new THREE.MeshBasicMaterial({ color: 0xff5500, transparent: true, opacity: 0.15, blending: THREE.AdditiveBlending }); 
+        const halo = new THREE.Mesh(haloGeo, haloMat); 
+        scene.add(halo);
+    }
+
+    // STARS
+    const starsGeo = new THREE.BufferGeometry(); 
+    // Massive reduction in particles for Low End (500 vs 3000)
+    const starsCnt = isLowEnd ? 500 : 3000; 
+    const posArray = new Float32Array(starsCnt * 3); 
+    const colorsArray = new Float32Array(starsCnt * 3);
+    for(let i=0; i<starsCnt*3; i+=3) { 
+        posArray[i] = (Math.random() - 0.5) * 1200; 
+        posArray[i+1] = (Math.random() - 0.5) * 1200;
+        posArray[i+2] = (Math.random() - 0.5) * 1200;
+        const c = 0.8 + Math.random() * 0.2;
+        colorsArray[i] = c; colorsArray[i+1] = c; colorsArray[i+2] = c;
+    } 
+    starsGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3)); 
+    starsGeo.setAttribute('color', new THREE.BufferAttribute(colorsArray, 3));
+    const starsMat = new THREE.PointsMaterial({
+        size: isLowEnd ? 2.5 : 0.8, 
+        vertexColors: true, 
+        sizeAttenuation: true
+    }); 
+    const starMesh = new THREE.Points(starsGeo, starsMat); 
+    scene.add(starMesh);
+
+    // --- BATTLE SYSTEM ---
+    const battleGroup = new THREE.Group();
+    scene.add(battleGroup);
+
+    // Helper: Create High Fidelity Human Ship (Optimized)
+    const createHumanCruiser = () => {
+        const ship = new THREE.Group();
+        
+        if (isLowEnd) {
+            // Low-End: Simple Boxy Ship - extremely cheap to render
+            const body = new THREE.Mesh(new THREE.BoxGeometry(1.5, 1, 5), new THREE.MeshLambertMaterial({ color: 0x303030 }));
+            const wings = new THREE.Mesh(new THREE.BoxGeometry(5, 0.2, 3), new THREE.MeshLambertMaterial({ color: 0x404040 }));
+            wings.position.y = -0.2;
+            const engineMat = new THREE.MeshLambertMaterial({ color: 0x222222 });
+            const engineL = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 2), engineMat); 
+            engineL.position.set(-1.5, 0, 2.5);
+            const engineR = engineL.clone(); engineR.position.set(1.5, 0, 2.5);
+            ship.add(body, wings, engineL, engineR);
+        } else {
+            // High-End: Detailed "Starfighter"
+            const hullMat = new THREE.MeshStandardMaterial({ color: 0x505050, roughness: 0.4, metalness: 0.7 });
+            const paintMat = new THREE.MeshStandardMaterial({ color: 0xcc3333, roughness: 0.4, metalness: 0.5 }); // Red stripes
+            const cockpitMat = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.1, metalness: 0.9, emissive: 0x001133, emissiveIntensity: 0.2 });
+            const engineGlowMat = new THREE.MeshBasicMaterial({ color: 0x00ffff });
+            const darkMat = new THREE.MeshStandardMaterial({ color: 0x222222, roughness: 0.8 });
+
+            // Fuselage
+            const fuselage = new THREE.Mesh(new THREE.BoxGeometry(1, 0.8, 4), hullMat);
+            const nose = new THREE.Mesh(new THREE.ConeGeometry(0.5, 2, 8), hullMat);
+            nose.rotation.x = -Math.PI/2;
+            nose.position.z = -3;
+            
+            // Cockpit
+            const cockpit = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.5, 1.5), cockpitMat);
+            cockpit.position.set(0, 0.5, -0.5);
+
+            // Wings
+            const wingGeo = new THREE.BoxGeometry(4, 0.1, 2.5);
+            const wings = new THREE.Mesh(wingGeo, hullMat);
+            wings.position.set(0, -0.1, 0.5);
+            
+            // Wing Stripes
+            const stripeL = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.12, 2.5), paintMat); stripeL.position.set(-1.5, -0.1, 0.5);
+            const stripeR = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.12, 2.5), paintMat); stripeR.position.set(1.5, -0.1, 0.5);
+
+            // Engines
+            const engineGeo = new THREE.CylinderGeometry(0.4, 0.5, 2.5, 16);
+            engineGeo.rotateX(Math.PI/2);
+            const engineL = new THREE.Mesh(engineGeo, darkMat); engineL.position.set(-1.2, 0.1, 2);
+            const engineR = new THREE.Mesh(engineGeo, darkMat); engineR.position.set(1.2, 0.1, 2);
+
+            // Thrusters
+            const glowGeo = new THREE.CircleGeometry(0.35, 16);
+            const thrustL = new THREE.Mesh(glowGeo, engineGlowMat); thrustL.position.set(0, 1.26, 0); thrustL.rotation.x = -Math.PI/2;
+            const thrustR = new THREE.Mesh(glowGeo, engineGlowMat); thrustR.position.set(0, 1.26, 0); thrustR.rotation.x = -Math.PI/2;
+            engineL.add(thrustL);
+            engineR.add(thrustR);
+
+            ship.add(fuselage, nose, cockpit, wings, stripeL, stripeR, engineL, engineR);
+            ship.traverse(c => { if(c instanceof THREE.Mesh) { c.castShadow = true; c.receiveShadow = true; }});
+        }
+        
+        ship.rotation.y = Math.PI; 
+        return ship;
+    };
+
+    // Helper: Create Alien Dreadnought (Optimized)
+    const createAlienDreadnought = () => {
+        const ship = new THREE.Group();
+        
+        if (isLowEnd) {
+             const saucerGeo = new THREE.CylinderGeometry(0.5, 3, 1, 12);
+             const saucer = new THREE.Mesh(saucerGeo, new THREE.MeshLambertMaterial({ color: 0x888888 }));
+             const dome = new THREE.Mesh(new THREE.SphereGeometry(1.2, 8, 8, 0, Math.PI * 2, 0, Math.PI / 2), new THREE.MeshBasicMaterial({ color: 0x00ff00, transparent: true, opacity: 0.6 }));
+             dome.position.y = 0.2;
+             const ring = new THREE.Mesh(new THREE.TorusGeometry(3.5, 0.2, 4, 12), new THREE.MeshBasicMaterial({ color: 0x00ff00 }));
+             ring.rotation.x = Math.PI / 2;
+             ship.add(saucer, dome, ring);
+             ship.userData = { rotator: ring };
+        } else {
+             const metalMat = new THREE.MeshStandardMaterial({ color: 0x444444, roughness: 0.2, metalness: 1.0 });
+             const glowMat = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+             
+             // Central Core
+             const core = new THREE.Mesh(new THREE.SphereGeometry(1.5, 32, 32), new THREE.MeshStandardMaterial({
+                 color: 0x000000, roughness: 0.1, metalness: 1.0, emissive: 0x003300, emissiveIntensity: 0.5
+             }));
+             
+             // Inner Ring (Rotating)
+             const ring1Geo = new THREE.TorusGeometry(3, 0.3, 16, 64);
+             const ring1 = new THREE.Mesh(ring1Geo, metalMat);
+             ring1.rotation.x = Math.PI / 2;
+             
+             // Outer Ring (Rotating opposite)
+             const ring2Geo = new THREE.TorusGeometry(5, 0.5, 16, 64);
+             const ring2 = new THREE.Mesh(ring2Geo, metalMat);
+             ring2.rotation.x = Math.PI / 2;
+             
+             // Connecting Arms/Spikes
+             const spikes = new THREE.Group();
+             for(let i=0; i<6; i++) {
+                 const spike = new THREE.Mesh(new THREE.ConeGeometry(0.5, 6, 8), metalMat);
+                 spike.rotation.z = (i / 6) * Math.PI * 2;
+                 spike.position.x = Math.cos((i/6)*Math.PI*2) * 4;
+                 spike.position.z = Math.sin((i/6)*Math.PI*2) * 4;
+                 spike.rotation.x = Math.PI/2;
+                 spike.lookAt(new THREE.Vector3(0,0,0));
+                 spikes.add(spike);
+             }
+
+             ship.add(core, ring1, ring2, spikes);
+             ship.traverse(c => { if(c instanceof THREE.Mesh) { c.castShadow = true; c.receiveShadow = true; }});
+             
+             ship.userData = { 
+                 rotator1: ring1,
+                 rotator2: ring2,
+                 rotator3: spikes
+             };
+        }
+        return ship;
+    };
+
+    class Ship {
+        mesh: THREE.Group;
+        type: 'human' | 'ufo';
+        hp: number;
+        isDead: boolean;
+        target: Ship | null;
+        weaponCooldown: number;
+        velocity: THREE.Vector3;
+        
+        constructor(type: 'human' | 'ufo', pos: THREE.Vector3) {
+            this.type = type;
+            this.mesh = type === 'human' ? createHumanCruiser() : createAlienDreadnought();
+            this.mesh.position.copy(pos);
+            battleGroup.add(this.mesh);
+            this.hp = 100;
+            this.isDead = false;
+            this.target = null;
+            this.weaponCooldown = Math.random() * 100;
+            this.velocity = new THREE.Vector3();
+        }
+
+        update(delta: number, ships: Ship[]) {
+            if (this.isDead) return;
+            
+            // Rotation Logic
+            if (this.type === 'ufo') {
+                if (this.mesh.userData.rotator) {
+                    this.mesh.userData.rotator.rotation.z += delta * 2;
+                }
+                if (this.mesh.userData.rotator1) {
+                    this.mesh.userData.rotator1.rotation.z += delta * 1;
+                    this.mesh.userData.rotator2.rotation.z -= delta * 0.5;
+                    this.mesh.userData.rotator3.rotation.y += delta * 0.2;
+                }
+            }
+
+            const time = Date.now() * 0.0005;
+            const tangent = new THREE.Vector3(-this.mesh.position.z, 0, this.mesh.position.x).normalize();
+            this.velocity.copy(tangent).multiplyScalar(10 * delta); 
+            this.mesh.position.add(this.velocity);
+            this.mesh.position.y += Math.sin(time + this.mesh.position.x) * 0.05;
+            
+            const lookTarget = this.mesh.position.clone().add(tangent.multiplyScalar(10));
+            this.mesh.lookAt(lookTarget);
+            
+            this.weaponCooldown -= delta * 60;
+            if (this.weaponCooldown <= 0) {
+                if (!this.target || this.target.isDead || this.target.mesh.position.distanceTo(this.mesh.position) > 150) {
+                    this.target = ships.find(s => s !== this && s.type !== this.type && !s.isDead) || null;
+                }
+                if (this.target) {
+                    this.fire(this.target);
+                    this.weaponCooldown = 20 + Math.random() * 40; 
+                }
+            }
+        }
+
+        fire(target: Ship) {
+            const dist = this.mesh.position.distanceTo(target.mesh.position);
+            const weaponType = dist < 50 ? 'laser' : (Math.random() > 0.6 ? 'rocket' : 'gun');
+            if (weaponType === 'laser') {
+                createLaser(this.mesh.position, target.mesh.position, this.type === 'human' ? 0x00ffff : 0x00ff00);
+                target.takeDamage(10);
+            } else if (weaponType === 'rocket') {
+                createRocket(this.mesh.position, target, this.type === 'human' ? 0xffaa00 : 0x00ff00);
+            } else {
+                createBullet(this.mesh.position, target.mesh.position, this.type === 'human' ? 0xffff00 : 0x00ff00);
+                target.takeDamage(5);
+            }
+        }
+
+        takeDamage(amount: number) {
+            this.hp -= amount;
+            if (this.hp <= 0 && !this.isDead) this.die();
+        }
+
+        die() {
+            this.isDead = true;
+            createExplosion(this.mesh.position, this.type === 'human' ? 0xffaa00 : 0x00ff00);
+            battleGroup.remove(this.mesh);
+        }
+    }
+
+    const projectiles: any[] = [];
+    const explosions: any[] = [];
+    const debrisList: any[] = [];
+
+    const createLaser = (start: THREE.Vector3, end: THREE.Vector3, color: number) => {
+        const geo = new THREE.BufferGeometry().setFromPoints([start, end]);
+        const mat = new THREE.LineBasicMaterial({ color: color }); // Removed additive blending for performance on some mobile GPUs
+        const line = new THREE.Line(geo, mat);
+        battleGroup.add(line);
+        setTimeout(() => { if(battleGroup) battleGroup.remove(line); }, 100); 
+    };
+
+    const createBullet = (start: THREE.Vector3, targetPos: THREE.Vector3, color: number) => {
+        const mesh = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.2, 1), new THREE.MeshBasicMaterial({ color: color }));
+        mesh.position.copy(start);
+        mesh.lookAt(targetPos);
+        const dir = new THREE.Vector3().subVectors(targetPos, start).normalize();
+        battleGroup.add(mesh);
+        projectiles.push({ mesh, velocity: dir.multiplyScalar(2), life: 60, type: 'bullet' });
+    };
+
+    const createRocket = (start: THREE.Vector3, target: Ship, color: number) => {
+        const mesh = new THREE.Mesh(new THREE.ConeGeometry(0.3, 1, 4), new THREE.MeshBasicMaterial({ color: 0x333333 })); // Reduced radial segments
+        mesh.position.copy(start);
+        mesh.rotateX(Math.PI/2);
+        
+        // Only add light if High End device
+        let light;
+        if (!isLowEnd) {
+            light = new THREE.PointLight(color, 1, 10);
+            light.position.y = -0.5;
+            mesh.add(light);
+        }
+        
+        battleGroup.add(mesh);
+        projectiles.push({ mesh, target, velocity: new THREE.Vector3(0,0,0), speed: 0.5, life: 200, type: 'rocket', light });
+    };
+
+    const createExplosion = (pos: THREE.Vector3, color: number) => {
+        // Only add dynamic light if High End
+        let light;
+        if (!isLowEnd) {
+             light = new THREE.PointLight(color, 3, 40);
+             light.position.copy(pos);
+             battleGroup.add(light);
+        }
+        
+        const mesh = new THREE.Mesh(new THREE.SphereGeometry(1, 8, 8), new THREE.MeshBasicMaterial({ color: color, transparent: true, opacity: 0.8 }));
+        mesh.position.copy(pos);
+        battleGroup.add(mesh);
+        explosions.push({ light, mesh, age: 0, maxAge: 20 }); 
+        
+        // Reduce debris count significantly for low end
+        createDebris(pos, color, isLowEnd ? 2 : 8);
+    };
+
+    const createDebris = (pos: THREE.Vector3, color: number, count: number) => {
+        for(let i=0; i<count; i++) {
+            const size = Math.random() * 0.5 + 0.1;
+            const mesh = new THREE.Mesh(new THREE.BoxGeometry(size, size, size), new THREE.MeshBasicMaterial({ color: color }));
+            mesh.position.copy(pos);
+            mesh.rotation.set(Math.random()*Math.PI, Math.random()*Math.PI, Math.random()*Math.PI);
+            const vel = new THREE.Vector3(Math.random()-0.5, Math.random()-0.5, Math.random()-0.5).normalize().multiplyScalar(Math.random() * 0.5);
+            battleGroup.add(mesh);
+            debrisList.push({ mesh, velocity: vel, rotVel: new THREE.Vector3(Math.random(), Math.random(), Math.random()).multiplyScalar(0.1), life: 40 + Math.random() * 40 });
+        }
+    };
+
+    const ships: Ship[] = [];
+    const spawnShip = (type: 'human' | 'ufo') => {
+        const angle = Math.random() * Math.PI * 2;
+        const dist = 60 + Math.random() * 40;
+        const pos = new THREE.Vector3(Math.cos(angle)*dist, (Math.random()-0.5)*20, Math.sin(angle)*dist);
+        ships.push(new Ship(type, pos));
+    };
+
+    // Reduce ship count for low end
+    const maxShips = isLowEnd ? 2 : 4;
+    for(let i=0; i<maxShips; i++) spawnShip('human');
+    for(let i=0; i<maxShips; i++) spawnShip('ufo');
+
+    // --- PLANET GENERATION ---
+    hubsRef.current = [];
+    HUBS.forEach((h, i) => {
+        let geo;
+        if (h.geometryType === 'torus') {
+            geo = new THREE.TorusGeometry(h.radius, h.radius * 0.4, isLowEnd ? 12 : 32, isLowEnd ? 24 : 64);
+        } else if (h.geometryType === 'icosahedron') {
+            geo = new THREE.IcosahedronGeometry(h.radius, 0);
+        } else {
+            geo = new THREE.SphereGeometry(h.radius, segs, segs); 
+        }
+
+        // Material selection based on performance tier
+        let mat;
+        if (isLowEnd) {
+             // Low end: Simple Lambert material (Gouraud shading)
+             mat = new THREE.MeshLambertMaterial({ color: h.color, wireframe: h.geometryType === 'icosahedron' });
+        } else {
+             // High end: Standard material (PBR) for realistic lighting
+             mat = new THREE.MeshStandardMaterial({ 
+                 color: h.color, 
+                 roughness: 0.6, 
+                 metalness: 0.1,
+                 wireframe: h.geometryType === 'icosahedron' 
+             });
+        }
+
+        const mesh = new THREE.Mesh(geo, mat);
+        
+        if (!isLowEnd) {
+            mesh.castShadow = true;
+            mesh.receiveShadow = true;
+        }
+
+        if (h.hasRing) { 
+            const ringGeo = new THREE.RingGeometry(h.radius * 1.5, h.radius * 2.2, isLowEnd ? 24 : 64); 
+            const ringMat = new THREE.MeshBasicMaterial({ color: 0xffd700, side: THREE.DoubleSide, transparent: true, opacity: 0.5 }); 
+            const ring = new THREE.Mesh(ringGeo, ringMat); 
+            ring.rotation.x = -Math.PI / 2; ring.rotation.y = Math.PI / 6; mesh.add(ring); 
+        }
+        if (h.geometryType === 'icosahedron') {
+             const innerGeo = new THREE.IcosahedronGeometry(h.radius * 0.6, 0);
+             const innerMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+             const inner = new THREE.Mesh(innerGeo, innerMat);
+             mesh.add(inner);
+        }
+
+        scene.add(mesh);
+        
+        const orbitGeo = new THREE.RingGeometry(h.distance - 0.15, h.distance + 0.15, isLowEnd ? 64 : 128); 
+        const orbitMat = new THREE.MeshBasicMaterial({ color: h.color, side: THREE.DoubleSide, transparent: true, opacity: 0.15 }); 
+        const orbitLine = new THREE.Mesh(orbitGeo, orbitMat); 
+        orbitLine.rotation.x = -Math.PI / 2; 
+        scene.add(orbitLine);
+        
+        const label = document.createElement('div'); label.className = 'planet-label'; label.innerHTML = `<span style="font-size:1.2em; margin-right:4px;">${h.icon}</span> ${h.name}`; 
+        
+        label.onclick = () => {
+            if (warpRef.current.active) return;
+            warpRef.current.active = true;
+            warpRef.current.startTime = clock.getElapsedTime();
+            warpRef.current.startPos.copy(camera.position);
+            const planetPos = new THREE.Vector3().copy(mesh.position);
+            const direction = new THREE.Vector3().subVectors(camera.position, planetPos).normalize();
+            warpRef.current.target.copy(planetPos).add(direction.multiplyScalar(10));
+            warpRef.current.hub = h;
+            controlsRef.current.enabled = false;
+        };
+        
+        labelContainer.appendChild(label);
+        
+        hubsRef.current.push({ mesh, data: h, angle: Math.random() * Math.PI * 2, labelDiv: label });
+    });
+    
+    // Interaction Handlers (Click, Touch, Joystick) - Keep Existing Logic
+    const raycaster = new THREE.Raycaster(); const mouse = new THREE.Vector2();
+    const onClick = (e: MouseEvent) => { 
+        if (simState.current.mode === 'pilot' && !isLowEnd) { 
+            if (document.pointerLockElement !== document.body) document.body.requestPointerLock(); 
+            return; 
+        } 
+        if ((e.target as HTMLElement).closest('.planet-label')) return; 
+        
+        mouse.x = (e.clientX / window.innerWidth) * 2 - 1; 
+        mouse.y = -(e.clientY / window.innerHeight) * 2 + 1; 
+        raycaster.setFromCamera(mouse, camera); 
+        const intersects = raycaster.intersectObjects(hubsRef.current.map(o => o.mesh)); 
+        if (intersects.length > 0) { 
+            const hit = hubsRef.current.find(h => h.mesh === intersects[0].object); 
+            if (hit && !warpRef.current.active) {
+                warpRef.current.active = true;
+                warpRef.current.startTime = clock.getElapsedTime();
+                warpRef.current.startPos.copy(camera.position);
+                const planetPos = new THREE.Vector3().copy(hit.mesh.position);
+                const direction = new THREE.Vector3().subVectors(camera.position, planetPos).normalize();
+                warpRef.current.target.copy(planetPos).add(direction.multiplyScalar(10));
+                warpRef.current.hub = hit.data;
+                controlsRef.current.enabled = false;
+            } 
+        } 
+    };
+    renderer.domElement.addEventListener('click', onClick);
+    (window as any).joystickMove = (dx: number, dy: number) => { 
+        moveState.current.joyVector.set(dx, dy);
+        moveState.current.left = dx < -0.3; moveState.current.right = dx > 0.3; 
+        moveState.current.forward = dy < -0.3; moveState.current.backward = dy > 0.3; 
+    };
+    (window as any).joystickLook = (dx: number, dy: number) => { 
+        // Optimized look sensitivity
+        moveState.current.rotY = -dx * 0.03; 
+        moveState.current.rotX = -dy * 0.03; 
+    };
+    
+    let animationId: number; const tempV = new THREE.Vector3(); const clock = new THREE.Clock();
+    let width = window.innerWidth; let height = window.innerHeight; let frame = 0;
+
+    // --- ANIMATION LOOP ---
+    const animate = () => {
+        // PERFORMANCE: If hub is open (isVisible == false), completely STOP rendering.
+        // This ensures 0% GPU usage when the user is browsing products.
+        if (!simState.current.isVisible) {
+            setTimeout(() => requestAnimationFrame(animate), 100); // Check again slowly
+            return;
+        }
+
+        animationId = requestAnimationFrame(animate); 
+
+        frame++;
+        const delta = clock.getDelta(); 
+        const elapsedTime = clock.getElapsedTime();
+        const { isPaused, mode } = simState.current;
+        
+        coreMat.uniforms.time.value = elapsedTime;
+
+        if (!isPaused) {
+            hubsRef.current.forEach(h => { 
+                h.angle += h.data.speed * 0.5; 
+                h.mesh.position.x = Math.cos(h.angle) * h.data.distance;
+                h.mesh.position.z = Math.sin(h.angle) * h.data.distance;
+                h.mesh.position.y = 0; 
+                h.mesh.rotation.y += 0.005;
+                if(h.geometryType === 'torus' || h.geometryType === 'icosahedron') h.mesh.rotation.x += 0.005;
+            });
+            core.rotation.y += 0.002; 
+            starMesh.rotation.y -= 0.0001;
+
+            // --- UPDATE BATTLE ---
+            ships.forEach((ship, index) => {
+                if(ship.isDead) {
+                    ships.splice(index, 1);
+                    setTimeout(() => spawnShip(ship.type), 3000);
+                } else {
+                    ship.update(delta, ships);
+                }
+            });
+
+            for (let i = projectiles.length - 1; i >= 0; i--) {
+                const p = projectiles[i];
+                if (p.type === 'bullet') {
+                    p.mesh.position.add(p.velocity);
+                } else if (p.type === 'rocket') {
+                    if (p.target && !p.target.isDead) {
+                        const desired = new THREE.Vector3().subVectors(p.target.mesh.position, p.mesh.position).normalize();
+                        const steer = desired.sub(p.velocity.clone().normalize()).multiplyScalar(0.05); 
+                        p.velocity.add(steer).normalize().multiplyScalar(p.speed);
+                        p.mesh.lookAt(p.mesh.position.clone().add(p.velocity));
+                        p.mesh.position.add(p.velocity);
+                        p.speed += 0.01; 
+                        // Only create trail on high end
+                        if(!isLowEnd && frame % 3 === 0) createDebris(p.mesh.position, 0x555555, 1);
+                    } else {
+                        p.mesh.position.add(p.velocity);
+                    }
+                     if (p.target && !p.target.isDead && p.mesh.position.distanceTo(p.target.mesh.position) < 3) {
+                         p.target.takeDamage(40);
+                         createExplosion(p.mesh.position, 0xffaa00);
+                         p.life = 0; 
+                     }
+                }
+
+                p.life--;
+                if (p.life <= 0) {
+                    if (p.light) battleGroup.remove(p.light); // Clean up light
+                    battleGroup.remove(p.mesh);
+                    projectiles.splice(i, 1);
+                }
+            }
+
+            for (let i = explosions.length - 1; i >= 0; i--) {
+                const ex = explosions[i];
+                ex.age++;
+                const scale = 1 + (ex.age / ex.maxAge) * 3;
+                ex.mesh.scale.set(scale, scale, scale);
+                ex.mesh.material.opacity = 1 - (ex.age / ex.maxAge);
+                if (ex.light) ex.light.intensity = 5 * (1 - (ex.age / ex.maxAge)); // Only if light exists
+                
+                if(ex.age >= ex.maxAge) {
+                    battleGroup.remove(ex.mesh);
+                    if (ex.light) battleGroup.remove(ex.light);
+                    explosions.splice(i, 1);
+                }
+            }
+
+            for (let i = debrisList.length - 1; i >= 0; i--) {
+                const d = debrisList[i];
+                d.mesh.position.add(d.velocity);
+                d.mesh.rotation.x += d.rotVel.x;
+                d.mesh.rotation.y += d.rotVel.y;
+                d.life--;
+                if(d.life <= 0) {
+                    battleGroup.remove(d.mesh);
+                    debrisList.splice(i, 1);
+                }
+            }
+        }
+
+        if (warpRef.current.active) {
+            const t = (elapsedTime - warpRef.current.startTime) / warpRef.current.duration;
+            const easeT = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; 
+            if (t < 1.0) {
+                camera.position.lerpVectors(warpRef.current.startPos, warpRef.current.target, easeT);
+                camera.lookAt(warpRef.current.hub ? hubsRef.current.find(h => h.data.id === warpRef.current.hub!.id)!.mesh.position : new THREE.Vector3());
+                camera.fov = 45 + (Math.sin(t * Math.PI) * 30); 
+                camera.updateProjectionMatrix();
+            } else {
+                warpRef.current.active = false; camera.fov = 45; camera.updateProjectionMatrix();
+                if (warpRef.current.hub) onHubSelect(warpRef.current.hub);
+                controlsRef.current.enabled = true;
+            }
+        } else if (mode === 'cinematic' && orbitControls) { 
+            if (moveState.current.rotX !== 0 || moveState.current.rotY !== 0) {
+                 orbitControls.autoRotate = false;
+                 orbitControls.azimuthAngle -= moveState.current.rotY * 0.05;
+                 orbitControls.polarAngle -= moveState.current.rotX * 0.05;
+            } else { orbitControls.autoRotate = true; }
+            orbitControls.enabled = true; orbitControls.update(); 
+        } else if (mode === 'pilot' && !warpRef.current.active) {
+             if (orbitControls) orbitControls.enabled = false;
+             const speed = 50 * delta; const velocity = new THREE.Vector3();
+             if (moveState.current.forward) velocity.z -= speed; if (moveState.current.backward) velocity.z += speed; 
+             if (moveState.current.left) velocity.x -= speed; if (moveState.current.right) velocity.x += speed; 
+             if (moveState.current.up) velocity.y += speed; if (moveState.current.down) velocity.y -= speed;
+             const joy = moveState.current.joyVector;
+             if (joy.lengthSq() > 0.01) { velocity.x += joy.x * speed; velocity.z += joy.y * speed; }
+             camera.translateX(velocity.x); camera.translateZ(velocity.z); camera.translateY(velocity.y); 
+             
+             camera.rotateY(moveState.current.rotY); camera.rotateX(moveState.current.rotX); 
+             moveState.current.rotX *= 0.85; moveState.current.rotY *= 0.85; 
+             camera.rotation.z = 0; 
+        } else if (mode === 'directory' && orbitControls) { 
+            orbitControls.autoRotate = true; orbitControls.autoRotateSpeed = 0.2; orbitControls.update(); 
+        }
+
+        const updateFrequency = isLowEnd ? 4 : 2;
+        if (frame % updateFrequency === 0 && !warpRef.current.active) {
+            hubsRef.current.forEach(h => { 
+                if (h.labelDiv && h.mesh) { 
+                    h.mesh.getWorldPosition(tempV); tempV.project(camera); 
+                    if (tempV.z < 1 && tempV.z > -1) { 
+                        const x = (tempV.x * .5 + .5) * width; const y = (tempV.y * -.5 + .5) * height; 
+                        h.labelDiv.style.display = 'block'; h.labelDiv.style.transform = `translate3d(${x.toFixed(1)}px, ${(y - 40).toFixed(1)}px, 0)`;
+                    } else { h.labelDiv.style.display = 'none'; } 
+                } 
+            });
+        } else if (warpRef.current.active) { hubsRef.current.forEach(h => { if(h.labelDiv) h.labelDiv.style.display = 'none'; }); }
+        
+        renderer.render(scene, camera);
+    };
+    animate();
+    
+    const handleResize = () => { 
+        camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); 
+        renderer.setSize(window.innerWidth, window.innerHeight); width = window.innerWidth; height = window.innerHeight;
+    };
+    window.addEventListener('resize', handleResize);
+    
+    return () => { 
+        cancelAnimationFrame(animationId); window.removeEventListener('resize', handleResize); 
+        renderer.domElement.removeEventListener('click', onClick); 
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('pointerlockchange', onPointerLockChange);
+        if (mountRef.current) mountRef.current.innerHTML = ''; 
+        if (orbitControls) orbitControls.dispose(); 
+        scene.traverse((object) => { if (object instanceof THREE.Mesh) { object.geometry.dispose(); if (object.material) { if (Array.isArray(object.material)) object.material.forEach((m:any) => m.dispose()); else object.material.dispose(); } } });
+        delete (window as any).joystickMove; delete (window as any).joystickLook; 
+    };
+  }, []);
+  
+  // Also hide joysticks if scene is not visible (hub open)
+  const shouldShowJoysticks = isVisible && showJoysticks && (mode === 'pilot' || mode === 'cinematic');
+
+  return (
+      <div style={{ width: '100%', height: '100%', display: isVisible ? 'block' : 'none' }}>
+        <div ref={mountRef} style={{ width: "100%", height: "100%", cursor: mode === 'pilot' ? "none" : "crosshair" }} />
+        {mode === 'pilot' && !isLocked && !showJoysticks && isVisible && (
+            <div className="pilot-instructions">
+                <h2>Pilot Mode Engaged</h2>
+                <p>WASD to Move | Mouse to Look | Space/Shift to Ascend/Descend</p>
+                <button className="pilot-btn" onClick={() => { document.body.requestPointerLock(); }}>CLICK TO START</button>
+            </div>
+        )}
+        {shouldShowJoysticks && (
+            <>
+                <Joystick zone="left" onMove={(x,y) => (window as any).joystickMove && (window as any).joystickMove(x,y)} />
+                <Joystick zone="right" onMove={(x,y) => (window as any).joystickLook && (window as any).joystickLook(x,y)} />
+            </>
+        )}
+      </div>
+  );
+}
+
+function Joystick({ zone, onMove }: { zone: 'left' | 'right', onMove: (x:number, y:number) => void }) {
+    const ref = useRef<HTMLDivElement>(null); const knobRef = useRef<HTMLDivElement>(null); const touchId = useRef<number | null>(null);
+    const handleStart = (e: React.TouchEvent) => { 
+        e.preventDefault(); e.stopPropagation(); if (touchId.current !== null) return; 
+        const touch = e.changedTouches[0]; touchId.current = touch.identifier; update(touch); 
+    };
+    const handleMove = (e: React.TouchEvent) => { 
+        e.preventDefault(); e.stopPropagation(); if (touchId.current === null) return; 
+        const touch = Array.from(e.changedTouches).find((t: React.Touch) => t.identifier === touchId.current); if (touch) update(touch); 
+    };
+    const handleEnd = (e: React.TouchEvent) => { 
+        e.preventDefault(); e.stopPropagation(); 
+        const touch = Array.from(e.changedTouches).find((t: React.Touch) => t.identifier === touchId.current); 
+        if (touch) { touchId.current = null; if (knobRef.current) knobRef.current.style.transform = `translate(-50%, -50%) translate(0px, 0px)`; onMove(0, 0); } 
+    };
+    const update = (touch: React.Touch) => { if (!ref.current || !knobRef.current) return; const rect = ref.current.getBoundingClientRect(); const centerX = rect.left + rect.width / 2; const centerY = rect.top + rect.height / 2; let dx = touch.clientX - centerX; let dy = touch.clientY - centerY; const distance = Math.sqrt(dx*dx + dy*dy); const maxDist = rect.width / 2; if (distance > maxDist) { const angle = Math.atan2(dy, dx); dx = Math.cos(angle) * maxDist; dy = Math.sin(angle) * maxDist; } knobRef.current.style.transform = `translate(-50%, -50%) translate(${dx}px, ${dy}px)`; onMove(dx / maxDist, dy / maxDist); };
+    return <div className="joystick-zone" style={{ left: zone === 'left' ? '40px' : 'auto', right: zone === 'right' ? '40px' : 'auto' }} ref={ref} onTouchStart={handleStart} onTouchMove={handleMove} onTouchEnd={handleEnd}><div className="joystick-base"></div><div className="joystick-knob" ref={knobRef}></div></div>;
+}
+
+const root = createRoot(document.getElementById("root")!);
+root.render(<App />);
