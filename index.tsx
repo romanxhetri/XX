@@ -82,18 +82,17 @@ type HubData = {
   icon: string;
   hasRing?: boolean;
   geometryType?: 'sphere' | 'torus' | 'icosahedron';
-  bgClass?: string; // CSS class for background image
 };
 
 const HUBS: HubData[] = [
-  { id: "mobile", name: "Mobile Hub", type: 'shop', radius: 2.0, distance: 20, speed: 0.015, color: 0x4aa3ff, description: "Latest Smartphones & Accessories", icon: "📱", geometryType: 'sphere', bgClass: 'bg-mobile' },
-  { id: "laptop", name: "Laptop Hub", type: 'shop', radius: 2.5, distance: 35, speed: 0.012, color: 0xc0c0c0, description: "High-Performance Computing", icon: "💻", geometryType: 'sphere', bgClass: 'bg-laptop' },
-  { id: "secondhand", name: "2nd Hand Market", type: 'shop', radius: 3.5, distance: 50, speed: 0.009, color: 0xff8844, description: "Buy, Sell, Exchange Pre-loved Items", icon: "♻️", geometryType: 'sphere', bgClass: 'bg-default' },
-  { id: "products", name: "Product Hub", type: 'shop', radius: 2.8, distance: 65, speed: 0.007, color: 0x00ffcc, description: "Tech Gadgets & Essentials", icon: "🎧", geometryType: 'sphere', bgClass: 'bg-tools' },
-  { id: "fashion", name: "Fashion Hub", type: 'shop', radius: 3.0, distance: 80, speed: 0.005, color: 0xff66aa, description: "Virtual Try-On & Trends", icon: "👗", geometryType: 'sphere', bgClass: 'bg-fashion' },
-  { id: "realstate", name: "Real Estate", type: 'shop', radius: 4.0, distance: 95, speed: 0.004, color: 0x22aa55, hasRing: true, description: "Property & Business Assets", icon: "🏢", geometryType: 'sphere', bgClass: 'bg-mobile' },
-  { id: "video", name: "Video Hub", type: 'video', radius: 3.0, distance: 110, speed: 0.003, color: 0x9933ff, description: "Tutorials & Learning", icon: "🎓", geometryType: 'icosahedron', bgClass: 'bg-video' },
-  { id: "tools", name: "Tools Hub", type: 'tools', radius: 2.5, distance: 125, speed: 0.002, color: 0x4444ff, description: "16+ AI Utilities Dashboard", icon: "🛠️", geometryType: 'torus', bgClass: 'bg-tools' },
+  { id: "mobile", name: "Mobile Hub", type: 'shop', radius: 2.0, distance: 20, speed: 0.015, color: 0x4aa3ff, description: "Latest Smartphones & Accessories", icon: "📱", geometryType: 'sphere' },
+  { id: "laptop", name: "Laptop Hub", type: 'shop', radius: 2.5, distance: 35, speed: 0.012, color: 0xc0c0c0, description: "High-Performance Computing", icon: "💻", geometryType: 'sphere' },
+  { id: "secondhand", name: "2nd Hand Market", type: 'shop', radius: 3.5, distance: 50, speed: 0.009, color: 0xff8844, description: "Buy, Sell, Exchange Pre-loved Items", icon: "♻️", geometryType: 'sphere' },
+  { id: "products", name: "Product Hub", type: 'shop', radius: 2.8, distance: 65, speed: 0.007, color: 0x00ffcc, description: "Tech Gadgets & Essentials", icon: "🎧", geometryType: 'sphere' },
+  { id: "fashion", name: "Fashion Hub", type: 'shop', radius: 3.0, distance: 80, speed: 0.005, color: 0xff66aa, description: "Virtual Try-On & Trends", icon: "👗", geometryType: 'sphere' },
+  { id: "realstate", name: "Real Estate", type: 'shop', radius: 4.0, distance: 95, speed: 0.004, color: 0x22aa55, hasRing: true, description: "Property & Business Assets", icon: "🏢", geometryType: 'sphere' },
+  { id: "video", name: "Video Hub", type: 'video', radius: 3.0, distance: 110, speed: 0.003, color: 0x9933ff, description: "Tutorials & Learning", icon: "🎓", geometryType: 'icosahedron' },
+  { id: "tools", name: "Tools Hub", type: 'tools', radius: 2.5, distance: 125, speed: 0.002, color: 0x4444ff, description: "16+ AI Utilities Dashboard", icon: "🛠️", geometryType: 'torus' },
 ];
 
 const INITIAL_PRODUCTS: Product[] = [
@@ -126,7 +125,8 @@ const AI_TOOLS = [
 
 const AI_MODEL = "gemini-3-flash-preview";
 
-// --- Shader Helper: Simplex Noise ---
+// --- Shader Helper: Simplex Noise (Shared string) ---
+// Simplified Noise for Sun
 const noiseFunction = `
 vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
 vec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
@@ -204,22 +204,6 @@ void main() {
   vec3 color3 = vec3(1.0, 1.0, 0.9); 
   vec3 finalColor = mix(color1, color2, noiseVal * 0.5 + 0.5);
   finalColor = mix(finalColor, color3, pow(max(0.0, noiseVal), 3.0));
-  gl_FragColor = vec4(finalColor, 1.0);
-}
-`;
-
-// Simple shader for low-end devices to avoid expensive noise
-const simpleSunFragmentShader = `
-uniform float time;
-varying vec2 vUv;
-varying vec3 vNormal;
-
-void main() {
-  vec3 color1 = vec3(0.8, 0.2, 0.0); 
-  vec3 color2 = vec3(1.0, 0.8, 0.1); 
-  // Simple gradient based on normal Y for static "sun-like" appearance
-  float gradient = vNormal.y * 0.5 + 0.5;
-  vec3 finalColor = mix(color1, color2, gradient);
   gl_FragColor = vec4(finalColor, 1.0);
 }
 `;
@@ -326,7 +310,6 @@ function App() {
             />;
   }
 
-  // Pass !activeHub as 'isVisible' prop to SolarSystemScene to pause rendering when Hub is open
   return (
     <div style={{ width: "100%", height: "100%", position: "relative", overflow: "hidden" }}>
       <SolarSystemScene 
@@ -335,8 +318,7 @@ function App() {
           setActiveHub(hub);
           if(navMode !== 'directory') setNavMode('cinematic'); 
         }} 
-        isPaused={navMode === 'directory'}
-        isVisible={!activeHub} 
+        isPaused={!!activeHub || navMode === 'directory'}
         mode={navMode}
       />
       
@@ -721,8 +703,7 @@ function HubOverlay({ hub, onClose, onProductClick, products, videos, initialFil
   const hasFlashSale = hub.type === 'shop' && Math.random() > 0.3;
 
   return (
-    <div className={`hub-overlay-container ${hub.bgClass || 'bg-default'}`}>
-      <div className="hub-overlay-bg-dimmer" />
+    <div className="hub-overlay-container">
       <div className="hub-header">
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <span style={{ fontSize: "2rem" }}>{hub.icon}</span>
@@ -869,23 +850,22 @@ function ChatInterface({ activeHub, onClose }: { activeHub: HubData | null, onCl
 // --- Three.js Logic ---
 
 function getPerformanceTier() {
-    // Stricter detection for low-end devices
-    // Mobile devices, devices with low memory, or low core count are treated as "low"
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     const cores = navigator.hardwareConcurrency || 2;
     // @ts-ignore
-    const memory = navigator.deviceMemory || 2; 
+    const memory = navigator.deviceMemory || 2; // Approximate RAM in GB
     
-    // Conservative: If it's a mobile device OR has <= 4GB RAM, treat as low end to guarantee smoothness
+    // Low End: Mobile or RAM <= 4GB or Cores <= 4
     if (isMobile || memory <= 4 || cores <= 4) {
         return 'low';
     }
+    // High End: Desktop with > 4GB RAM
     return 'high';
 }
 
-function SolarSystemScene({ onHubSelect, isPaused, isVisible, mode }: { onHubSelect: (h: HubData) => void, isPaused: boolean, isVisible: boolean, mode: NavMode }) {
+function SolarSystemScene({ onHubSelect, isPaused, mode }: { onHubSelect: (h: HubData) => void, isPaused: boolean, mode: NavMode }) {
   const mountRef = useRef<HTMLDivElement>(null);
-  const simState = useRef({ isPaused, mode, isVisible });
+  const simState = useRef({ isPaused, mode });
   
   // Warp State tracking
   const warpRef = useRef({
@@ -915,8 +895,9 @@ function SolarSystemScene({ onHubSelect, isPaused, isVisible, mode }: { onHubSel
   const [isLocked, setIsLocked] = useState(false);
   const [showJoysticks, setShowJoysticks] = useState(false);
 
-  useEffect(() => { simState.current = { isPaused, mode, isVisible }; }, [isPaused, mode, isVisible]);
+  useEffect(() => { simState.current = { isPaused, mode }; }, [isPaused, mode]);
 
+  // Detect mobile/touch for joystick rendering
   useEffect(() => {
     const checkTouch = () => {
         if (window.matchMedia("(pointer: coarse)").matches || 'ontouchstart' in window) {
@@ -948,33 +929,29 @@ function SolarSystemScene({ onHubSelect, isPaused, isVisible, mode }: { onHubSel
     
     // SCENE SETUP
     const scene = new THREE.Scene(); 
-    scene.background = new THREE.Color(0x020205); 
-    // Reduced fog calculation for low end
+    scene.background = new THREE.Color(0x020205); // Clean, dark background
+    // Simplified fog for performance
     scene.fog = new THREE.FogExp2(0x020205, isLowEnd ? 0.001 : 0.002); 
     
     const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 2000); 
     cameraRef.current = camera;
     camera.rotation.order = 'YXZ';
+    
+    // Mobile position adjustment
     camera.position.set(0, isLowEnd ? 140 : 100, isLowEnd ? 260 : 180);
     
     const renderer = new THREE.WebGLRenderer({ 
-        antialias: !isLowEnd, // OFF for low-end devices
-        alpha: false, 
+        antialias: !isLowEnd, // Disable AA on low-end
+        alpha: false, // Opaque is faster
         powerPreference: "high-performance",
-        precision: isLowEnd ? "mediump" : "highp", // Lower precision for low-end
+        precision: isLowEnd ? "mediump" : "highp", // Lower precision for speed
         depth: true,
-        stencil: false
+        stencil: false // Disable stencil buffer if not needed
     }); 
     renderer.setSize(window.innerWidth, window.innerHeight); 
-    
-    // Cap pixel ratio to 1 for low-end to prevent high-DPI lag
+    // Cap pixel ratio: 1.0 for low-end (crucial for performance), max 1.5 for high-end
     renderer.setPixelRatio(isLowEnd ? 1 : Math.min(window.devicePixelRatio, 1.5));
-    
-    if (!isLowEnd) {
-        renderer.shadowMap.enabled = true;
-        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    }
-
+    // CRITICAL: Prevent scrolling/gestures on canvas from interfering with UI
     renderer.domElement.style.touchAction = 'none'; 
     mountRef.current.appendChild(renderer.domElement);
     
@@ -1003,399 +980,93 @@ function SolarSystemScene({ onHubSelect, isPaused, isVisible, mode }: { onHubSel
     document.addEventListener('pointerlockchange', onPointerLockChange);
     
     // LIGHTING
-    // Low End: Simple ambient light only (no dynamic lights needed for menu bg)
-    const ambientLight = new THREE.AmbientLight(0x404040, isLowEnd ? 3 : 2); 
+    const ambientLight = new THREE.AmbientLight(0x404040, 2); 
     scene.add(ambientLight);
     
+    // Only one point light for the sun
     const coreLight = new THREE.PointLight(0xffaa00, 3, 400); 
-    if (!isLowEnd) {
-        // Dynamic shadows only for High End
-        coreLight.castShadow = true;
-        coreLight.shadow.mapSize.width = 1024;
-        coreLight.shadow.mapSize.height = 1024;
-        coreLight.shadow.camera.near = 0.5;
-        coreLight.shadow.camera.far = 500;
-        coreLight.shadow.bias = -0.0001; 
-    }
     scene.add(coreLight);
     
     // GEOMETRY OPTIMIZATION
-    // Drastically reduce segments for Low End
-    const segs = isLowEnd ? 12 : 64; 
+    const segs = isLowEnd ? 32 : 64; 
 
     // --- SUN SHADER ---
     const coreGeo = new THREE.SphereGeometry(10, segs, segs); 
     const coreMat = new THREE.ShaderMaterial({
         vertexShader: sunVertexShader,
-        // Use simpler shader for low end to avoid expensive noise calculation
-        fragmentShader: isLowEnd ? simpleSunFragmentShader : sunFragmentShader,
-        uniforms: { time: { value: 0 } }
+        fragmentShader: sunFragmentShader,
+        uniforms: {
+            time: { value: 0 }
+        }
     });
     const core = new THREE.Mesh(coreGeo, coreMat); 
     scene.add(core);
 
-    if (!isLowEnd) {
-        // Only add glow halo on High End devices
-        const glowGeo = new THREE.SphereGeometry(12, 32, 32); 
-        const glowMat = new THREE.MeshBasicMaterial({ color: 0xffaa00, transparent: true, opacity: 0.3 }); 
-        const glow = new THREE.Mesh(glowGeo, glowMat); 
-        scene.add(glow);
-        
-        const haloGeo = new THREE.SphereGeometry(16, 32, 32); 
-        const haloMat = new THREE.MeshBasicMaterial({ color: 0xff5500, transparent: true, opacity: 0.15, blending: THREE.AdditiveBlending }); 
-        const halo = new THREE.Mesh(haloGeo, haloMat); 
-        scene.add(halo);
-    }
+    const glowGeo = new THREE.SphereGeometry(12, segs, segs); 
+    const glowMat = new THREE.MeshBasicMaterial({ color: 0xffaa00, transparent: true, opacity: 0.3 }); 
+    const glow = new THREE.Mesh(glowGeo, glowMat); 
+    scene.add(glow);
+    
+    // Outer Halo
+    const haloGeo = new THREE.SphereGeometry(16, segs, segs); 
+    const haloMat = new THREE.MeshBasicMaterial({ color: 0xff5500, transparent: true, opacity: 0.15, blending: THREE.AdditiveBlending }); 
+    const halo = new THREE.Mesh(haloGeo, haloMat); 
+    scene.add(halo);
+
+    // REMOVED: Asteroid Belt, Holographic Billboards, Warp Lines, Comet, UFOs
+    // to meet "remove all stones and that blue objects" requirement.
 
     // STARS
     const starsGeo = new THREE.BufferGeometry(); 
-    // Massive reduction in particles for Low End (500 vs 3000)
-    const starsCnt = isLowEnd ? 500 : 3000; 
+    // Reduced star count for low end
+    const starsCnt = isLowEnd ? 1500 : 4000; 
     const posArray = new Float32Array(starsCnt * 3); 
     const colorsArray = new Float32Array(starsCnt * 3);
     for(let i=0; i<starsCnt*3; i+=3) { 
         posArray[i] = (Math.random() - 0.5) * 1200; 
         posArray[i+1] = (Math.random() - 0.5) * 1200;
         posArray[i+2] = (Math.random() - 0.5) * 1200;
+        
         const c = 0.8 + Math.random() * 0.2;
         colorsArray[i] = c; colorsArray[i+1] = c; colorsArray[i+2] = c;
     } 
     starsGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3)); 
     starsGeo.setAttribute('color', new THREE.BufferAttribute(colorsArray, 3));
     const starsMat = new THREE.PointsMaterial({
-        size: isLowEnd ? 2.5 : 0.8, 
+        size: isLowEnd ? 2.0 : 0.8, 
         vertexColors: true, 
         sizeAttenuation: true
     }); 
     const starMesh = new THREE.Points(starsGeo, starsMat); 
     scene.add(starMesh);
 
-    // --- BATTLE SYSTEM ---
-    const battleGroup = new THREE.Group();
-    scene.add(battleGroup);
-
-    // Helper: Create High Fidelity Human Ship (Optimized)
-    const createHumanCruiser = () => {
-        const ship = new THREE.Group();
-        
-        if (isLowEnd) {
-            // Low-End: Simple Boxy Ship - extremely cheap to render
-            const body = new THREE.Mesh(new THREE.BoxGeometry(1.5, 1, 5), new THREE.MeshLambertMaterial({ color: 0x303030 }));
-            const wings = new THREE.Mesh(new THREE.BoxGeometry(5, 0.2, 3), new THREE.MeshLambertMaterial({ color: 0x404040 }));
-            wings.position.y = -0.2;
-            const engineMat = new THREE.MeshLambertMaterial({ color: 0x222222 });
-            const engineL = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 2), engineMat); 
-            engineL.position.set(-1.5, 0, 2.5);
-            const engineR = engineL.clone(); engineR.position.set(1.5, 0, 2.5);
-            ship.add(body, wings, engineL, engineR);
-        } else {
-            // High-End: Detailed "Starfighter"
-            const hullMat = new THREE.MeshStandardMaterial({ color: 0x505050, roughness: 0.4, metalness: 0.7 });
-            const paintMat = new THREE.MeshStandardMaterial({ color: 0xcc3333, roughness: 0.4, metalness: 0.5 }); // Red stripes
-            const cockpitMat = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.1, metalness: 0.9, emissive: 0x001133, emissiveIntensity: 0.2 });
-            const engineGlowMat = new THREE.MeshBasicMaterial({ color: 0x00ffff });
-            const darkMat = new THREE.MeshStandardMaterial({ color: 0x222222, roughness: 0.8 });
-
-            // Fuselage
-            const fuselage = new THREE.Mesh(new THREE.BoxGeometry(1, 0.8, 4), hullMat);
-            const nose = new THREE.Mesh(new THREE.ConeGeometry(0.5, 2, 8), hullMat);
-            nose.rotation.x = -Math.PI/2;
-            nose.position.z = -3;
-            
-            // Cockpit
-            const cockpit = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.5, 1.5), cockpitMat);
-            cockpit.position.set(0, 0.5, -0.5);
-
-            // Wings
-            const wingGeo = new THREE.BoxGeometry(4, 0.1, 2.5);
-            const wings = new THREE.Mesh(wingGeo, hullMat);
-            wings.position.set(0, -0.1, 0.5);
-            
-            // Wing Stripes
-            const stripeL = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.12, 2.5), paintMat); stripeL.position.set(-1.5, -0.1, 0.5);
-            const stripeR = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.12, 2.5), paintMat); stripeR.position.set(1.5, -0.1, 0.5);
-
-            // Engines
-            const engineGeo = new THREE.CylinderGeometry(0.4, 0.5, 2.5, 16);
-            engineGeo.rotateX(Math.PI/2);
-            const engineL = new THREE.Mesh(engineGeo, darkMat); engineL.position.set(-1.2, 0.1, 2);
-            const engineR = new THREE.Mesh(engineGeo, darkMat); engineR.position.set(1.2, 0.1, 2);
-
-            // Thrusters
-            const glowGeo = new THREE.CircleGeometry(0.35, 16);
-            const thrustL = new THREE.Mesh(glowGeo, engineGlowMat); thrustL.position.set(0, 1.26, 0); thrustL.rotation.x = -Math.PI/2;
-            const thrustR = new THREE.Mesh(glowGeo, engineGlowMat); thrustR.position.set(0, 1.26, 0); thrustR.rotation.x = -Math.PI/2;
-            engineL.add(thrustL);
-            engineR.add(thrustR);
-
-            ship.add(fuselage, nose, cockpit, wings, stripeL, stripeR, engineL, engineR);
-            ship.traverse(c => { if(c instanceof THREE.Mesh) { c.castShadow = true; c.receiveShadow = true; }});
-        }
-        
-        ship.rotation.y = Math.PI; 
-        return ship;
-    };
-
-    // Helper: Create Alien Dreadnought (Optimized)
-    const createAlienDreadnought = () => {
-        const ship = new THREE.Group();
-        
-        if (isLowEnd) {
-             const saucerGeo = new THREE.CylinderGeometry(0.5, 3, 1, 12);
-             const saucer = new THREE.Mesh(saucerGeo, new THREE.MeshLambertMaterial({ color: 0x888888 }));
-             const dome = new THREE.Mesh(new THREE.SphereGeometry(1.2, 8, 8, 0, Math.PI * 2, 0, Math.PI / 2), new THREE.MeshBasicMaterial({ color: 0x00ff00, transparent: true, opacity: 0.6 }));
-             dome.position.y = 0.2;
-             const ring = new THREE.Mesh(new THREE.TorusGeometry(3.5, 0.2, 4, 12), new THREE.MeshBasicMaterial({ color: 0x00ff00 }));
-             ring.rotation.x = Math.PI / 2;
-             ship.add(saucer, dome, ring);
-             ship.userData = { rotator: ring };
-        } else {
-             const metalMat = new THREE.MeshStandardMaterial({ color: 0x444444, roughness: 0.2, metalness: 1.0 });
-             const glowMat = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-             
-             // Central Core
-             const core = new THREE.Mesh(new THREE.SphereGeometry(1.5, 32, 32), new THREE.MeshStandardMaterial({
-                 color: 0x000000, roughness: 0.1, metalness: 1.0, emissive: 0x003300, emissiveIntensity: 0.5
-             }));
-             
-             // Inner Ring (Rotating)
-             const ring1Geo = new THREE.TorusGeometry(3, 0.3, 16, 64);
-             const ring1 = new THREE.Mesh(ring1Geo, metalMat);
-             ring1.rotation.x = Math.PI / 2;
-             
-             // Outer Ring (Rotating opposite)
-             const ring2Geo = new THREE.TorusGeometry(5, 0.5, 16, 64);
-             const ring2 = new THREE.Mesh(ring2Geo, metalMat);
-             ring2.rotation.x = Math.PI / 2;
-             
-             // Connecting Arms/Spikes
-             const spikes = new THREE.Group();
-             for(let i=0; i<6; i++) {
-                 const spike = new THREE.Mesh(new THREE.ConeGeometry(0.5, 6, 8), metalMat);
-                 spike.rotation.z = (i / 6) * Math.PI * 2;
-                 spike.position.x = Math.cos((i/6)*Math.PI*2) * 4;
-                 spike.position.z = Math.sin((i/6)*Math.PI*2) * 4;
-                 spike.rotation.x = Math.PI/2;
-                 spike.lookAt(new THREE.Vector3(0,0,0));
-                 spikes.add(spike);
-             }
-
-             ship.add(core, ring1, ring2, spikes);
-             ship.traverse(c => { if(c instanceof THREE.Mesh) { c.castShadow = true; c.receiveShadow = true; }});
-             
-             ship.userData = { 
-                 rotator1: ring1,
-                 rotator2: ring2,
-                 rotator3: spikes
-             };
-        }
-        return ship;
-    };
-
-    class Ship {
-        mesh: THREE.Group;
-        type: 'human' | 'ufo';
-        hp: number;
-        isDead: boolean;
-        target: Ship | null;
-        weaponCooldown: number;
-        velocity: THREE.Vector3;
-        
-        constructor(type: 'human' | 'ufo', pos: THREE.Vector3) {
-            this.type = type;
-            this.mesh = type === 'human' ? createHumanCruiser() : createAlienDreadnought();
-            this.mesh.position.copy(pos);
-            battleGroup.add(this.mesh);
-            this.hp = 100;
-            this.isDead = false;
-            this.target = null;
-            this.weaponCooldown = Math.random() * 100;
-            this.velocity = new THREE.Vector3();
-        }
-
-        update(delta: number, ships: Ship[]) {
-            if (this.isDead) return;
-            
-            // Rotation Logic
-            if (this.type === 'ufo') {
-                if (this.mesh.userData.rotator) {
-                    this.mesh.userData.rotator.rotation.z += delta * 2;
-                }
-                if (this.mesh.userData.rotator1) {
-                    this.mesh.userData.rotator1.rotation.z += delta * 1;
-                    this.mesh.userData.rotator2.rotation.z -= delta * 0.5;
-                    this.mesh.userData.rotator3.rotation.y += delta * 0.2;
-                }
-            }
-
-            const time = Date.now() * 0.0005;
-            const tangent = new THREE.Vector3(-this.mesh.position.z, 0, this.mesh.position.x).normalize();
-            this.velocity.copy(tangent).multiplyScalar(10 * delta); 
-            this.mesh.position.add(this.velocity);
-            this.mesh.position.y += Math.sin(time + this.mesh.position.x) * 0.05;
-            
-            const lookTarget = this.mesh.position.clone().add(tangent.multiplyScalar(10));
-            this.mesh.lookAt(lookTarget);
-            
-            this.weaponCooldown -= delta * 60;
-            if (this.weaponCooldown <= 0) {
-                if (!this.target || this.target.isDead || this.target.mesh.position.distanceTo(this.mesh.position) > 150) {
-                    this.target = ships.find(s => s !== this && s.type !== this.type && !s.isDead) || null;
-                }
-                if (this.target) {
-                    this.fire(this.target);
-                    this.weaponCooldown = 20 + Math.random() * 40; 
-                }
-            }
-        }
-
-        fire(target: Ship) {
-            const dist = this.mesh.position.distanceTo(target.mesh.position);
-            const weaponType = dist < 50 ? 'laser' : (Math.random() > 0.6 ? 'rocket' : 'gun');
-            if (weaponType === 'laser') {
-                createLaser(this.mesh.position, target.mesh.position, this.type === 'human' ? 0x00ffff : 0x00ff00);
-                target.takeDamage(10);
-            } else if (weaponType === 'rocket') {
-                createRocket(this.mesh.position, target, this.type === 'human' ? 0xffaa00 : 0x00ff00);
-            } else {
-                createBullet(this.mesh.position, target.mesh.position, this.type === 'human' ? 0xffff00 : 0x00ff00);
-                target.takeDamage(5);
-            }
-        }
-
-        takeDamage(amount: number) {
-            this.hp -= amount;
-            if (this.hp <= 0 && !this.isDead) this.die();
-        }
-
-        die() {
-            this.isDead = true;
-            createExplosion(this.mesh.position, this.type === 'human' ? 0xffaa00 : 0x00ff00);
-            battleGroup.remove(this.mesh);
-        }
-    }
-
-    const projectiles: any[] = [];
-    const explosions: any[] = [];
-    const debrisList: any[] = [];
-
-    const createLaser = (start: THREE.Vector3, end: THREE.Vector3, color: number) => {
-        const geo = new THREE.BufferGeometry().setFromPoints([start, end]);
-        const mat = new THREE.LineBasicMaterial({ color: color }); // Removed additive blending for performance on some mobile GPUs
-        const line = new THREE.Line(geo, mat);
-        battleGroup.add(line);
-        setTimeout(() => { if(battleGroup) battleGroup.remove(line); }, 100); 
-    };
-
-    const createBullet = (start: THREE.Vector3, targetPos: THREE.Vector3, color: number) => {
-        const mesh = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.2, 1), new THREE.MeshBasicMaterial({ color: color }));
-        mesh.position.copy(start);
-        mesh.lookAt(targetPos);
-        const dir = new THREE.Vector3().subVectors(targetPos, start).normalize();
-        battleGroup.add(mesh);
-        projectiles.push({ mesh, velocity: dir.multiplyScalar(2), life: 60, type: 'bullet' });
-    };
-
-    const createRocket = (start: THREE.Vector3, target: Ship, color: number) => {
-        const mesh = new THREE.Mesh(new THREE.ConeGeometry(0.3, 1, 4), new THREE.MeshBasicMaterial({ color: 0x333333 })); // Reduced radial segments
-        mesh.position.copy(start);
-        mesh.rotateX(Math.PI/2);
-        
-        // Only add light if High End device
-        let light;
-        if (!isLowEnd) {
-            light = new THREE.PointLight(color, 1, 10);
-            light.position.y = -0.5;
-            mesh.add(light);
-        }
-        
-        battleGroup.add(mesh);
-        projectiles.push({ mesh, target, velocity: new THREE.Vector3(0,0,0), speed: 0.5, life: 200, type: 'rocket', light });
-    };
-
-    const createExplosion = (pos: THREE.Vector3, color: number) => {
-        // Only add dynamic light if High End
-        let light;
-        if (!isLowEnd) {
-             light = new THREE.PointLight(color, 3, 40);
-             light.position.copy(pos);
-             battleGroup.add(light);
-        }
-        
-        const mesh = new THREE.Mesh(new THREE.SphereGeometry(1, 8, 8), new THREE.MeshBasicMaterial({ color: color, transparent: true, opacity: 0.8 }));
-        mesh.position.copy(pos);
-        battleGroup.add(mesh);
-        explosions.push({ light, mesh, age: 0, maxAge: 20 }); 
-        
-        // Reduce debris count significantly for low end
-        createDebris(pos, color, isLowEnd ? 2 : 8);
-    };
-
-    const createDebris = (pos: THREE.Vector3, color: number, count: number) => {
-        for(let i=0; i<count; i++) {
-            const size = Math.random() * 0.5 + 0.1;
-            const mesh = new THREE.Mesh(new THREE.BoxGeometry(size, size, size), new THREE.MeshBasicMaterial({ color: color }));
-            mesh.position.copy(pos);
-            mesh.rotation.set(Math.random()*Math.PI, Math.random()*Math.PI, Math.random()*Math.PI);
-            const vel = new THREE.Vector3(Math.random()-0.5, Math.random()-0.5, Math.random()-0.5).normalize().multiplyScalar(Math.random() * 0.5);
-            battleGroup.add(mesh);
-            debrisList.push({ mesh, velocity: vel, rotVel: new THREE.Vector3(Math.random(), Math.random(), Math.random()).multiplyScalar(0.1), life: 40 + Math.random() * 40 });
-        }
-    };
-
-    const ships: Ship[] = [];
-    const spawnShip = (type: 'human' | 'ufo') => {
-        const angle = Math.random() * Math.PI * 2;
-        const dist = 60 + Math.random() * 40;
-        const pos = new THREE.Vector3(Math.cos(angle)*dist, (Math.random()-0.5)*20, Math.sin(angle)*dist);
-        ships.push(new Ship(type, pos));
-    };
-
-    // Reduce ship count for low end
-    const maxShips = isLowEnd ? 2 : 4;
-    for(let i=0; i<maxShips; i++) spawnShip('human');
-    for(let i=0; i<maxShips; i++) spawnShip('ufo');
-
-    // --- PLANET GENERATION ---
     hubsRef.current = [];
     HUBS.forEach((h, i) => {
         let geo;
         if (h.geometryType === 'torus') {
-            geo = new THREE.TorusGeometry(h.radius, h.radius * 0.4, isLowEnd ? 12 : 32, isLowEnd ? 24 : 64);
+            // Lower segments for Torus on low end
+            geo = new THREE.TorusGeometry(h.radius, h.radius * 0.4, isLowEnd ? 12 : 16, isLowEnd ? 24 : 32);
         } else if (h.geometryType === 'icosahedron') {
             geo = new THREE.IcosahedronGeometry(h.radius, 0);
         } else {
             geo = new THREE.SphereGeometry(h.radius, segs, segs); 
         }
 
-        // Material selection based on performance tier
-        let mat;
-        if (isLowEnd) {
-             // Low end: Simple Lambert material (Gouraud shading)
-             mat = new THREE.MeshLambertMaterial({ color: h.color, wireframe: h.geometryType === 'icosahedron' });
-        } else {
-             // High end: Standard material (PBR) for realistic lighting
-             mat = new THREE.MeshStandardMaterial({ 
-                 color: h.color, 
-                 roughness: 0.6, 
-                 metalness: 0.1,
-                 wireframe: h.geometryType === 'icosahedron' 
-             });
-        }
-
+        const mat = new THREE.MeshLambertMaterial({ 
+            color: h.color,
+            wireframe: h.geometryType === 'icosahedron' 
+        }); 
         const mesh = new THREE.Mesh(geo, mat);
         
-        if (!isLowEnd) {
-            mesh.castShadow = true;
-            mesh.receiveShadow = true;
-        }
-
         if (h.hasRing) { 
-            const ringGeo = new THREE.RingGeometry(h.radius * 1.5, h.radius * 2.2, isLowEnd ? 24 : 64); 
+            const ringGeo = new THREE.RingGeometry(h.radius * 1.5, h.radius * 2.2, isLowEnd ? 24 : 32); 
             const ringMat = new THREE.MeshBasicMaterial({ color: 0xffd700, side: THREE.DoubleSide, transparent: true, opacity: 0.5 }); 
             const ring = new THREE.Mesh(ringGeo, ringMat); 
-            ring.rotation.x = -Math.PI / 2; ring.rotation.y = Math.PI / 6; mesh.add(ring); 
+            ring.rotation.x = -Math.PI / 2; 
+            ring.rotation.y = Math.PI / 6; 
+            mesh.add(ring); 
         }
+        
         if (h.geometryType === 'icosahedron') {
              const innerGeo = new THREE.IcosahedronGeometry(h.radius * 0.6, 0);
              const innerMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
@@ -1427,14 +1098,20 @@ function SolarSystemScene({ onHubSelect, isPaused, isVisible, mode }: { onHubSel
         
         labelContainer.appendChild(label);
         
-        hubsRef.current.push({ mesh, data: h, angle: Math.random() * Math.PI * 2, labelDiv: label });
+        hubsRef.current.push({ 
+            mesh, 
+            data: h, 
+            angle: Math.random() * Math.PI * 2, 
+            labelDiv: label
+        });
     });
     
-    // Interaction Handlers (Click, Touch, Joystick) - Keep Existing Logic
     const raycaster = new THREE.Raycaster(); const mouse = new THREE.Vector2();
     const onClick = (e: MouseEvent) => { 
         if (simState.current.mode === 'pilot' && !isLowEnd) { 
-            if (document.pointerLockElement !== document.body) document.body.requestPointerLock(); 
+            if (document.pointerLockElement !== document.body) {
+                document.body.requestPointerLock(); 
+            }
             return; 
         } 
         if ((e.target as HTMLElement).closest('.planet-label')) return; 
@@ -1458,31 +1135,24 @@ function SolarSystemScene({ onHubSelect, isPaused, isVisible, mode }: { onHubSel
         } 
     };
     renderer.domElement.addEventListener('click', onClick);
+    
     (window as any).joystickMove = (dx: number, dy: number) => { 
         moveState.current.joyVector.set(dx, dy);
-        moveState.current.left = dx < -0.3; moveState.current.right = dx > 0.3; 
-        moveState.current.forward = dy < -0.3; moveState.current.backward = dy > 0.3; 
+        moveState.current.left = dx < -0.3; 
+        moveState.current.right = dx > 0.3; 
+        moveState.current.forward = dy < -0.3; 
+        moveState.current.backward = dy > 0.3; 
     };
-    (window as any).joystickLook = (dx: number, dy: number) => { 
-        // Optimized look sensitivity
-        moveState.current.rotY = -dx * 0.03; 
-        moveState.current.rotX = -dy * 0.03; 
-    };
+    (window as any).joystickLook = (dx: number, dy: number) => { moveState.current.rotY = -dx * 0.03; moveState.current.rotX = -dy * 0.03; };
     
     let animationId: number; const tempV = new THREE.Vector3(); const clock = new THREE.Clock();
-    let width = window.innerWidth; let height = window.innerHeight; let frame = 0;
+    
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+    let frame = 0;
 
-    // --- ANIMATION LOOP ---
     const animate = () => {
-        // PERFORMANCE: If hub is open (isVisible == false), completely STOP rendering.
-        // This ensures 0% GPU usage when the user is browsing products.
-        if (!simState.current.isVisible) {
-            setTimeout(() => requestAnimationFrame(animate), 100); // Check again slowly
-            return;
-        }
-
         animationId = requestAnimationFrame(animate); 
-
         frame++;
         const delta = clock.getDelta(); 
         const elapsedTime = clock.getElapsedTime();
@@ -1490,7 +1160,71 @@ function SolarSystemScene({ onHubSelect, isPaused, isVisible, mode }: { onHubSel
         
         coreMat.uniforms.time.value = elapsedTime;
 
-        if (!isPaused) {
+        if (warpRef.current.active) {
+            const t = (elapsedTime - warpRef.current.startTime) / warpRef.current.duration;
+            const easeT = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; 
+
+            if (t < 1.0) {
+                camera.position.lerpVectors(warpRef.current.startPos, warpRef.current.target, easeT);
+                camera.lookAt(warpRef.current.hub ? hubsRef.current.find(h => h.data.id === warpRef.current.hub!.id)!.mesh.position : new THREE.Vector3());
+                
+                const warpIntensity = Math.sin(t * Math.PI); 
+                camera.fov = 45 + (warpIntensity * 30); 
+                camera.updateProjectionMatrix();
+
+            } else {
+                warpRef.current.active = false;
+                camera.fov = 45;
+                camera.updateProjectionMatrix();
+                if (warpRef.current.hub) onHubSelect(warpRef.current.hub);
+                controlsRef.current.enabled = true;
+            }
+        }
+        
+        if (mode === 'cinematic' && orbitControls && !warpRef.current.active) { 
+            if (moveState.current.rotX !== 0 || moveState.current.rotY !== 0) {
+                 orbitControls.autoRotate = false;
+                 orbitControls.azimuthAngle -= moveState.current.rotY * 0.05;
+                 orbitControls.polarAngle -= moveState.current.rotX * 0.05;
+            } else {
+                 orbitControls.autoRotate = true;
+            }
+            orbitControls.enabled = true; 
+            orbitControls.update(); 
+        }
+        else if (mode === 'pilot' && !warpRef.current.active) {
+             if (orbitControls) orbitControls.enabled = false;
+             const speed = 50 * delta; const velocity = new THREE.Vector3();
+             
+             if (moveState.current.forward) velocity.z -= speed; 
+             if (moveState.current.backward) velocity.z += speed; 
+             if (moveState.current.left) velocity.x -= speed; 
+             if (moveState.current.right) velocity.x += speed; 
+             if (moveState.current.up) velocity.y += speed; 
+             if (moveState.current.down) velocity.y -= speed;
+             
+             const joy = moveState.current.joyVector;
+             if (joy.lengthSq() > 0.01) {
+                 velocity.x += joy.x * speed; 
+                 velocity.z += joy.y * speed; 
+             }
+
+             camera.translateX(velocity.x); 
+             camera.translateZ(velocity.z); 
+             camera.translateY(velocity.y); 
+             
+             camera.rotateY(moveState.current.rotY); 
+             camera.rotateX(moveState.current.rotX); 
+             moveState.current.rotX *= 0.85; 
+             moveState.current.rotY *= 0.85; 
+             
+             camera.rotation.z = 0; 
+        } 
+        else if (mode === 'directory' && orbitControls) { 
+            orbitControls.autoRotate = true; orbitControls.autoRotateSpeed = 0.2; orbitControls.update(); 
+        }
+        
+        if (!isPaused && !warpRef.current.active) { 
             hubsRef.current.forEach(h => { 
                 h.angle += h.data.speed * 0.5; 
                 h.mesh.position.x = Math.cos(h.angle) * h.data.distance;
@@ -1500,157 +1234,74 @@ function SolarSystemScene({ onHubSelect, isPaused, isVisible, mode }: { onHubSel
                 if(h.geometryType === 'torus' || h.geometryType === 'icosahedron') h.mesh.rotation.x += 0.005;
             });
             core.rotation.y += 0.002; 
-            starMesh.rotation.y -= 0.0001;
-
-            // --- UPDATE BATTLE ---
-            ships.forEach((ship, index) => {
-                if(ship.isDead) {
-                    ships.splice(index, 1);
-                    setTimeout(() => spawnShip(ship.type), 3000);
-                } else {
-                    ship.update(delta, ships);
-                }
-            });
-
-            for (let i = projectiles.length - 1; i >= 0; i--) {
-                const p = projectiles[i];
-                if (p.type === 'bullet') {
-                    p.mesh.position.add(p.velocity);
-                } else if (p.type === 'rocket') {
-                    if (p.target && !p.target.isDead) {
-                        const desired = new THREE.Vector3().subVectors(p.target.mesh.position, p.mesh.position).normalize();
-                        const steer = desired.sub(p.velocity.clone().normalize()).multiplyScalar(0.05); 
-                        p.velocity.add(steer).normalize().multiplyScalar(p.speed);
-                        p.mesh.lookAt(p.mesh.position.clone().add(p.velocity));
-                        p.mesh.position.add(p.velocity);
-                        p.speed += 0.01; 
-                        // Only create trail on high end
-                        if(!isLowEnd && frame % 3 === 0) createDebris(p.mesh.position, 0x555555, 1);
-                    } else {
-                        p.mesh.position.add(p.velocity);
-                    }
-                     if (p.target && !p.target.isDead && p.mesh.position.distanceTo(p.target.mesh.position) < 3) {
-                         p.target.takeDamage(40);
-                         createExplosion(p.mesh.position, 0xffaa00);
-                         p.life = 0; 
-                     }
-                }
-
-                p.life--;
-                if (p.life <= 0) {
-                    if (p.light) battleGroup.remove(p.light); // Clean up light
-                    battleGroup.remove(p.mesh);
-                    projectiles.splice(i, 1);
-                }
-            }
-
-            for (let i = explosions.length - 1; i >= 0; i--) {
-                const ex = explosions[i];
-                ex.age++;
-                const scale = 1 + (ex.age / ex.maxAge) * 3;
-                ex.mesh.scale.set(scale, scale, scale);
-                ex.mesh.material.opacity = 1 - (ex.age / ex.maxAge);
-                if (ex.light) ex.light.intensity = 5 * (1 - (ex.age / ex.maxAge)); // Only if light exists
-                
-                if(ex.age >= ex.maxAge) {
-                    battleGroup.remove(ex.mesh);
-                    if (ex.light) battleGroup.remove(ex.light);
-                    explosions.splice(i, 1);
-                }
-            }
-
-            for (let i = debrisList.length - 1; i >= 0; i--) {
-                const d = debrisList[i];
-                d.mesh.position.add(d.velocity);
-                d.mesh.rotation.x += d.rotVel.x;
-                d.mesh.rotation.y += d.rotVel.y;
-                d.life--;
-                if(d.life <= 0) {
-                    battleGroup.remove(d.mesh);
-                    debrisList.splice(i, 1);
-                }
-            }
+            starMesh.rotation.y -= 0.0001; 
         }
 
-        if (warpRef.current.active) {
-            const t = (elapsedTime - warpRef.current.startTime) / warpRef.current.duration;
-            const easeT = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; 
-            if (t < 1.0) {
-                camera.position.lerpVectors(warpRef.current.startPos, warpRef.current.target, easeT);
-                camera.lookAt(warpRef.current.hub ? hubsRef.current.find(h => h.data.id === warpRef.current.hub!.id)!.mesh.position : new THREE.Vector3());
-                camera.fov = 45 + (Math.sin(t * Math.PI) * 30); 
-                camera.updateProjectionMatrix();
-            } else {
-                warpRef.current.active = false; camera.fov = 45; camera.updateProjectionMatrix();
-                if (warpRef.current.hub) onHubSelect(warpRef.current.hub);
-                controlsRef.current.enabled = true;
-            }
-        } else if (mode === 'cinematic' && orbitControls) { 
-            if (moveState.current.rotX !== 0 || moveState.current.rotY !== 0) {
-                 orbitControls.autoRotate = false;
-                 orbitControls.azimuthAngle -= moveState.current.rotY * 0.05;
-                 orbitControls.polarAngle -= moveState.current.rotX * 0.05;
-            } else { orbitControls.autoRotate = true; }
-            orbitControls.enabled = true; orbitControls.update(); 
-        } else if (mode === 'pilot' && !warpRef.current.active) {
-             if (orbitControls) orbitControls.enabled = false;
-             const speed = 50 * delta; const velocity = new THREE.Vector3();
-             if (moveState.current.forward) velocity.z -= speed; if (moveState.current.backward) velocity.z += speed; 
-             if (moveState.current.left) velocity.x -= speed; if (moveState.current.right) velocity.x += speed; 
-             if (moveState.current.up) velocity.y += speed; if (moveState.current.down) velocity.y -= speed;
-             const joy = moveState.current.joyVector;
-             if (joy.lengthSq() > 0.01) { velocity.x += joy.x * speed; velocity.z += joy.y * speed; }
-             camera.translateX(velocity.x); camera.translateZ(velocity.z); camera.translateY(velocity.y); 
-             
-             camera.rotateY(moveState.current.rotY); camera.rotateX(moveState.current.rotX); 
-             moveState.current.rotX *= 0.85; moveState.current.rotY *= 0.85; 
-             camera.rotation.z = 0; 
-        } else if (mode === 'directory' && orbitControls) { 
-            orbitControls.autoRotate = true; orbitControls.autoRotateSpeed = 0.2; orbitControls.update(); 
-        }
-
+        // Label Positioning 
+        // Optimization: Run label update less frequently on low end devices
         const updateFrequency = isLowEnd ? 4 : 2;
         if (frame % updateFrequency === 0 && !warpRef.current.active) {
             hubsRef.current.forEach(h => { 
                 if (h.labelDiv && h.mesh) { 
-                    h.mesh.getWorldPosition(tempV); tempV.project(camera); 
+                    h.mesh.getWorldPosition(tempV); 
+                    tempV.project(camera); 
+                    
                     if (tempV.z < 1 && tempV.z > -1) { 
-                        const x = (tempV.x * .5 + .5) * width; const y = (tempV.y * -.5 + .5) * height; 
-                        h.labelDiv.style.display = 'block'; h.labelDiv.style.transform = `translate3d(${x.toFixed(1)}px, ${(y - 40).toFixed(1)}px, 0)`;
-                    } else { h.labelDiv.style.display = 'none'; } 
+                        const x = (tempV.x * .5 + .5) * width; 
+                        const y = (tempV.y * -.5 + .5) * height; 
+                        h.labelDiv.style.display = 'block'; 
+                        h.labelDiv.style.transform = `translate3d(${x.toFixed(1)}px, ${(y - 40).toFixed(1)}px, 0)`;
+                    } else { 
+                        h.labelDiv.style.display = 'none'; 
+                    } 
                 } 
             });
-        } else if (warpRef.current.active) { hubsRef.current.forEach(h => { if(h.labelDiv) h.labelDiv.style.display = 'none'; }); }
+        } else if (warpRef.current.active) {
+             hubsRef.current.forEach(h => { if(h.labelDiv) h.labelDiv.style.display = 'none'; });
+        }
         
         renderer.render(scene, camera);
     };
     animate();
     
     const handleResize = () => { 
-        camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); 
-        renderer.setSize(window.innerWidth, window.innerHeight); width = window.innerWidth; height = window.innerHeight;
+        camera.aspect = window.innerWidth / window.innerHeight; 
+        camera.updateProjectionMatrix(); 
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        width = window.innerWidth;
+        height = window.innerHeight;
     };
     window.addEventListener('resize', handleResize);
     
     return () => { 
-        cancelAnimationFrame(animationId); window.removeEventListener('resize', handleResize); 
+        cancelAnimationFrame(animationId); 
+        window.removeEventListener('resize', handleResize); 
         renderer.domElement.removeEventListener('click', onClick); 
         document.removeEventListener('mousemove', onMouseMove);
         document.removeEventListener('pointerlockchange', onPointerLockChange);
         if (mountRef.current) mountRef.current.innerHTML = ''; 
         if (orbitControls) orbitControls.dispose(); 
-        scene.traverse((object) => { if (object instanceof THREE.Mesh) { object.geometry.dispose(); if (object.material) { if (Array.isArray(object.material)) object.material.forEach((m:any) => m.dispose()); else object.material.dispose(); } } });
-        delete (window as any).joystickMove; delete (window as any).joystickLook; 
+        // Memory cleanup
+        scene.traverse((object) => {
+            if (object instanceof THREE.Mesh) {
+                if (object.geometry) object.geometry.dispose();
+                if (object.material) {
+                     if (Array.isArray(object.material)) object.material.forEach(m => m.dispose());
+                     else object.material.dispose();
+                }
+            }
+        });
+        delete (window as any).joystickMove; 
+        delete (window as any).joystickLook; 
     };
   }, []);
   
-  // Also hide joysticks if scene is not visible (hub open)
-  const shouldShowJoysticks = isVisible && showJoysticks && (mode === 'pilot' || mode === 'cinematic');
+  const shouldShowJoysticks = showJoysticks && (mode === 'pilot' || mode === 'cinematic');
 
   return (
-      <div style={{ width: '100%', height: '100%', display: isVisible ? 'block' : 'none' }}>
+      <>
         <div ref={mountRef} style={{ width: "100%", height: "100%", cursor: mode === 'pilot' ? "none" : "crosshair" }} />
-        {mode === 'pilot' && !isLocked && !showJoysticks && isVisible && (
+        {mode === 'pilot' && !isLocked && !showJoysticks && (
             <div className="pilot-instructions">
                 <h2>Pilot Mode Engaged</h2>
                 <p>WASD to Move | Mouse to Look | Space/Shift to Ascend/Descend</p>
@@ -1663,24 +1314,36 @@ function SolarSystemScene({ onHubSelect, isPaused, isVisible, mode }: { onHubSel
                 <Joystick zone="right" onMove={(x,y) => (window as any).joystickLook && (window as any).joystickLook(x,y)} />
             </>
         )}
-      </div>
+      </>
   );
 }
 
 function Joystick({ zone, onMove }: { zone: 'left' | 'right', onMove: (x:number, y:number) => void }) {
     const ref = useRef<HTMLDivElement>(null); const knobRef = useRef<HTMLDivElement>(null); const touchId = useRef<number | null>(null);
     const handleStart = (e: React.TouchEvent) => { 
-        e.preventDefault(); e.stopPropagation(); if (touchId.current !== null) return; 
-        const touch = e.changedTouches[0]; touchId.current = touch.identifier; update(touch); 
+        e.preventDefault(); 
+        e.stopPropagation(); 
+        if (touchId.current !== null) return; 
+        const touch = e.changedTouches[0]; 
+        touchId.current = touch.identifier; 
+        update(touch); 
     };
     const handleMove = (e: React.TouchEvent) => { 
-        e.preventDefault(); e.stopPropagation(); if (touchId.current === null) return; 
-        const touch = Array.from(e.changedTouches).find((t: React.Touch) => t.identifier === touchId.current); if (touch) update(touch); 
+        e.preventDefault(); 
+        e.stopPropagation();
+        if (touchId.current === null) return; 
+        const touch = Array.from(e.changedTouches).find((t: React.Touch) => t.identifier === touchId.current); 
+        if (touch) update(touch); 
     };
     const handleEnd = (e: React.TouchEvent) => { 
-        e.preventDefault(); e.stopPropagation(); 
+        e.preventDefault();
+        e.stopPropagation();
         const touch = Array.from(e.changedTouches).find((t: React.Touch) => t.identifier === touchId.current); 
-        if (touch) { touchId.current = null; if (knobRef.current) knobRef.current.style.transform = `translate(-50%, -50%) translate(0px, 0px)`; onMove(0, 0); } 
+        if (touch) { 
+            touchId.current = null; 
+            if (knobRef.current) knobRef.current.style.transform = `translate(-50%, -50%) translate(0px, 0px)`; 
+            onMove(0, 0); 
+        } 
     };
     const update = (touch: React.Touch) => { if (!ref.current || !knobRef.current) return; const rect = ref.current.getBoundingClientRect(); const centerX = rect.left + rect.width / 2; const centerY = rect.top + rect.height / 2; let dx = touch.clientX - centerX; let dy = touch.clientY - centerY; const distance = Math.sqrt(dx*dx + dy*dy); const maxDist = rect.width / 2; if (distance > maxDist) { const angle = Math.atan2(dy, dx); dx = Math.cos(angle) * maxDist; dy = Math.sin(angle) * maxDist; } knobRef.current.style.transform = `translate(-50%, -50%) translate(${dx}px, ${dy}px)`; onMove(dx / maxDist, dy / maxDist); };
     return <div className="joystick-zone" style={{ left: zone === 'left' ? '40px' : 'auto', right: zone === 'right' ? '40px' : 'auto' }} ref={ref} onTouchStart={handleStart} onTouchMove={handleMove} onTouchEnd={handleEnd}><div className="joystick-base"></div><div className="joystick-knob" ref={knobRef}></div></div>;
