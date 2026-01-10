@@ -96,18 +96,79 @@ const HUBS: HubData[] = [
 ];
 
 const INITIAL_PRODUCTS: Product[] = [
+    // --- MOBILE HUB ---
     { id: "m1", hubId: "mobile", name: "iPhone 15 Pro Max (256GB)", price: 185000, originalPrice: 195000, rating: 4.9, reviews: 120, seller: "EvoStore", stock: 15, image: "https://images.unsplash.com/photo-1696446701796-da61225697cc?auto=format&fit=crop&w=300&q=80", description: "Natural Titanium, A17 Pro Chip, the most powerful iPhone." },
     { id: "m2", hubId: "mobile", name: "Samsung Galaxy S24 Ultra", price: 184999, rating: 4.8, reviews: 95, seller: "Samsung Nepal", stock: 20, image: "https://images.unsplash.com/photo-1706606992982-b7e252a92771?auto=format&fit=crop&w=300&q=80", description: "Titanium Grey, Galaxy AI features, S-Pen included." },
     { id: "m3", hubId: "mobile", name: "Redmi Note 13 Pro+ 5G", price: 47999, rating: 4.6, reviews: 300, seller: "Daraz Mall", stock: 50, image: "https://images.unsplash.com/photo-1707831839230-22c7d97793d2?auto=format&fit=crop&w=300&q=80", description: "200MP Camera, 120W HyperCharge, Curved Display." },
     { id: "m4", hubId: "mobile", name: "OnePlus 12 (16/512GB)", price: 139999, rating: 4.7, reviews: 45, seller: "Kratos Tech", stock: 10, image: "https://images.unsplash.com/photo-1678957949479-b1e876a38210?auto=format&fit=crop&w=300&q=80", description: "Snapdragon 8 Gen 3, Hasselblad Camera, 100W Charging." },
+    { id: "m5", hubId: "mobile", name: "Poco X6 Pro", price: 46999, rating: 4.5, reviews: 80, seller: "Xiaomi Nepal", stock: 30, image: "https://images.unsplash.com/photo-1598327105666-5b89351aff75?auto=format&fit=crop&w=300&q=80", description: "Gaming beast. Dimensity 8300 Ultra, 120Hz OLED." },
+    { id: "m6", hubId: "mobile", name: "Google Pixel 7", price: 65000, rating: 4.4, reviews: 20, seller: "Tech Studio", stock: 5, image: "https://images.unsplash.com/photo-1595941068918-281980ec9473?auto=format&fit=crop&w=300&q=80", description: "Stock Android experience. Best in class camera software." },
+    { id: "m7", hubId: "mobile", name: "Realme 11 Pro 5G", price: 39000, rating: 4.3, reviews: 55, seller: "Realme Official", stock: 25, image: "https://images.unsplash.com/photo-1605236453806-6ff36851218e?auto=format&fit=crop&w=300&q=80", description: "Curved Vision Display, 100MP OIS ProLight Camera." },
+    { id: "m8", hubId: "mobile", name: "Samsung Galaxy A55", price: 62999, rating: 4.6, reviews: 40, seller: "Samsung Nepal", stock: 15, image: "https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?auto=format&fit=crop&w=300&q=80", description: "Premium design, IP67 rating, Long software support." },
+    { id: "m9", hubId: "mobile", name: "iPhone 13 (128GB)", price: 90000, rating: 4.8, reviews: 500, seller: "Oliz Store", stock: 10, image: "https://images.unsplash.com/photo-1632661674596-df8be070a5c5?auto=format&fit=crop&w=300&q=80", description: "Still a great value. A15 Bionic, Cinematic mode." },
+    { id: "m10", hubId: "mobile", name: "Honor X9b", price: 43999, rating: 4.5, reviews: 60, seller: "Honor Nepal", stock: 40, image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=300&q=80", description: "Ultra-Bounce Anti-Drop Display. 5800mAh Battery." },
+
+    // --- LAPTOP HUB ---
     { id: "l1", hubId: "laptop", name: "Acer Nitro V 15 (2024)", price: 105000, originalPrice: 115000, rating: 4.7, reviews: 200, seller: "ITTI Computer", stock: 25, image: "https://images.unsplash.com/photo-1603302576837-37561b2e2302?auto=format&fit=crop&w=300&q=80", description: "i5-13th Gen, RTX 4050 6GB, 144Hz, Best Budget Gaming Laptop." },
     { id: "l2", hubId: "laptop", name: "Lenovo LOQ 15", price: 112000, rating: 4.8, reviews: 150, seller: "Megatech", stock: 15, image: "https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?auto=format&fit=crop&w=300&q=80", description: "Ryzen 7 7840HS, RTX 4060, The new budget king." },
+    { id: "l3", hubId: "laptop", name: "Apple MacBook Air M2", price: 155000, rating: 4.9, reviews: 85, seller: "EvoStore", stock: 12, image: "https://images.unsplash.com/photo-1611186871348-b1ce696e52c9?auto=format&fit=crop&w=300&q=80", description: "13.6-inch Liquid Retina, 8GB RAM, 256GB SSD, Midnight." },
+    { id: "l4", hubId: "laptop", name: "Dell XPS 13 Plus", price: 220000, rating: 4.6, reviews: 10, seller: "Neoteric", stock: 5, image: "https://images.unsplash.com/photo-1593642632823-8f78536788c6?auto=format&fit=crop&w=300&q=80", description: "Futuristic design, OLED touch display, 12th Gen i7." },
+    { id: "l5", hubId: "laptop", name: "HP Pavilion 15", price: 85000, rating: 4.3, reviews: 45, seller: "CAS Trading", stock: 20, image: "https://images.unsplash.com/photo-1588872657578-a3d2e184594c?auto=format&fit=crop&w=300&q=80", description: "Great for students. Ryzen 5 5625U, 16GB RAM, 512GB SSD." },
+    { id: "l6", hubId: "laptop", name: "Asus Vivobook 16", price: 75000, rating: 4.2, reviews: 30, seller: "Nagmani", stock: 18, image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=300&q=80", description: "Large 16-inch display, Ryzen 5, Thin and Light." },
+    { id: "l7", hubId: "laptop", name: "MSI Cyborg 15 AI", price: 145000, rating: 4.5, reviews: 22, seller: "Ocean Computers", stock: 8, image: "https://images.unsplash.com/photo-1587614382346-4ec70e388b28?auto=format&fit=crop&w=300&q=80", description: "Translucent design, RTX 4060, Intel Ultra 7 Processor." },
+    { id: "l8", hubId: "laptop", name: "Lenovo IdeaPad Slim 3", price: 55000, rating: 4.1, reviews: 120, seller: "Daraz Mall", stock: 50, image: "https://images.unsplash.com/photo-1544731612-de7f96afe55f?auto=format&fit=crop&w=300&q=80", description: "Budget friendly. i3-12th Gen, 8GB RAM, 256GB SSD." },
+    { id: "l9", hubId: "laptop", name: "Acer Swift Go 14", price: 98000, rating: 4.6, reviews: 18, seller: "ITTI", stock: 10, image: "https://images.unsplash.com/photo-1531297461136-82lw9f2a9683?auto=format&fit=crop&w=300&q=80", description: "OLED Display, Ultra-lightweight, Intel Evo Certified." },
+    { id: "l10", hubId: "laptop", name: "MacBook Pro 14 M3", price: 280000, rating: 5.0, reviews: 15, seller: "Oliz Store", stock: 5, image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=300&q=80", description: "Space Black, M3 Pro chip, 18GB RAM, Best laptop screen." },
+
+    // --- SECOND HAND HUB ---
     { id: "s1", hubId: "secondhand", name: "Royal Enfield Classic 350", price: 350000, rating: 4.5, reviews: 5, seller: "Suresh Bikers", stock: 1, isSecondHand: true, image: "https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=300&q=80", description: "2019 Model, Gunmetal Grey, Lot 85, Fresh Condition." },
     { id: "s2", hubId: "secondhand", name: "Hyundai Grand i10 (2016)", price: 1850000, rating: 4.2, reviews: 2, seller: "Kathmandu Recondition", stock: 1, isSecondHand: true, image: "https://images.unsplash.com/photo-1599321303867-047b4b3c02eb?auto=format&fit=crop&w=300&q=80", description: "Single Hand, Magna Variant, 45k km running." },
+    { id: "s3", hubId: "secondhand", name: "Used PS4 Slim 500GB", price: 22000, rating: 4.0, reviews: 8, seller: "Gamer Zone KTM", stock: 2, isSecondHand: true, image: "https://images.unsplash.com/photo-1506318137071-a8bcbf90d17c?auto=format&fit=crop&w=300&q=80", description: "Includes 1 controller and FIFA 21. Good working condition." },
+    { id: "s4", hubId: "secondhand", name: "Canon 200D Mark II", price: 45000, rating: 4.6, reviews: 3, seller: "Prakash Photography", stock: 1, isSecondHand: true, image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=300&q=80", description: "Shutter count 15k. Comes with kit lens and bag." },
+    { id: "s5", hubId: "secondhand", name: "Honda Dio Scooter (2018)", price: 110000, rating: 4.1, reviews: 1, seller: "Ram Bikes", stock: 1, isSecondHand: true, image: "https://images.unsplash.com/photo-1591635566278-10dca0ca66ee?auto=format&fit=crop&w=300&q=80", description: "Lot 55, Blue color. Tax cleared up to date. Smooth engine." },
+    { id: "s6", hubId: "secondhand", name: "Office Table & Chair", price: 8500, rating: 3.8, reviews: 0, seller: "Office Liquidation", stock: 5, isSecondHand: true, image: "https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?auto=format&fit=crop&w=300&q=80", description: "Sturdy wooden table with rolling chair. Minor scratches." },
+    { id: "s7", hubId: "secondhand", name: "Trinx Mountain Bike", price: 15000, rating: 4.3, reviews: 4, seller: "Cycle City", stock: 1, isSecondHand: true, image: "https://images.unsplash.com/photo-1485965120184-e224f723d621?auto=format&fit=crop&w=300&q=80", description: "21 Speed Shimano gears. Hydraulic brakes. Rarely used." },
+    { id: "s8", hubId: "secondhand", name: "LG Washing Machine 7kg", price: 20000, rating: 4.0, reviews: 2, seller: "Home Needs", stock: 1, isSecondHand: true, image: "https://images.unsplash.com/photo-1626806775351-538af713a4be?auto=format&fit=crop&w=300&q=80", description: "Front load, 3 years old. Fully functional. Moving out sale." },
+    { id: "s9", hubId: "secondhand", name: "IKEA Sofa Set (3+2)", price: 35000, rating: 4.4, reviews: 1, seller: "Expat Sale", stock: 1, isSecondHand: true, image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=300&q=80", description: "Grey fabric, very comfortable. No stains. 2 years old." },
+    { id: "s10", hubId: "secondhand", name: "Gaming PC Full Set", price: 60000, rating: 4.7, reviews: 6, seller: "Tech Enthusiast", stock: 1, isSecondHand: true, image: "https://images.unsplash.com/photo-1587202372775-e229f172b9d7?auto=format&fit=crop&w=300&q=80", description: "GTX 1660 Super, i5-9400F, 16GB RAM. Monitor included." },
+
+    // --- FASHION HUB ---
     { id: "f1", hubId: "fashion", name: "Goldstar Shoes 032", price: 1250, rating: 4.8, reviews: 1500, seller: "Goldstar Official", stock: 200, image: "https://images.unsplash.com/photo-1560769629-975ec94e6a86?auto=format&fit=crop&w=300&q=80", description: "The Classic Nepali Sneaker. Durable and Comfortable." },
-    { id: "r1", hubId: "realstate", name: "Land for Sale in Imadol", price: 3500000, rating: 4.5, reviews: 0, seller: "Nepal Land", stock: 1, image: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=300&q=80", description: "4 Aana, Near Krishna Mandir, 13ft road access. Price per Aana." },
+    { id: "f2", hubId: "fashion", name: "North Face Windcheater", price: 3500, rating: 4.5, reviews: 120, seller: "Thamel Gear", stock: 50, image: "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?auto=format&fit=crop&w=300&q=80", description: "Waterproof, fleece lined. Perfect for Kathmandu winters." },
+    { id: "f3", hubId: "fashion", name: "Cotton Kurta Suruwal", price: 4500, rating: 4.6, reviews: 30, seller: "Ason Bazaar", stock: 25, image: "https://images.unsplash.com/photo-1585487000160-6ebcfceb0d03?auto=format&fit=crop&w=300&q=80", description: "Traditional wear for men. Premium cotton fabric. Daura Suruwal style available." },
+    { id: "f4", hubId: "fashion", name: "Nepali Dhaka Topi", price: 800, rating: 4.9, reviews: 500, seller: "Palpali Dhaka", stock: 100, image: "https://images.unsplash.com/photo-1576871337632-b9aef4c17ab9?auto=format&fit=crop&w=300&q=80", description: "Authentic Palpali Dhaka pattern. Pride of Nepal." },
+    { id: "f5", hubId: "fashion", name: "Caliber Shoes", price: 2800, rating: 4.4, reviews: 80, seller: "Caliber Nepal", stock: 40, image: "https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?auto=format&fit=crop&w=300&q=80", description: "Stylish casual sneakers. Made in Nepal." },
+    { id: "f6", hubId: "fashion", name: "Levi's Denim Jeans", price: 5500, rating: 4.7, reviews: 60, seller: "Bhatbhateni", stock: 30, image: "https://images.unsplash.com/photo-1542272617-08f08630329e?auto=format&fit=crop&w=300&q=80", description: "Original 511 Slim Fit. Classic blue wash." },
+    { id: "f7", hubId: "fashion", name: "Printed T-Shirt", price: 1200, rating: 4.2, reviews: 200, seller: "UFO Clothing", stock: 150, image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=300&q=80", description: "100% Cotton with funky graphic prints. Summer essential." },
+    { id: "f8", hubId: "fashion", name: "Leather Jacket", price: 12000, rating: 4.8, reviews: 25, seller: "Human Fit", stock: 10, image: "https://images.unsplash.com/photo-1551028919-ac66e624ec99?auto=format&fit=crop&w=300&q=80", description: "Genuine buffalo leather. Biker style. Lifetime durability." },
+    { id: "f9", hubId: "fashion", name: "Party Wear Saree", price: 8000, rating: 4.5, reviews: 40, seller: "Fashion House", stock: 15, image: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=300&q=80", description: "Georgette fabric with embroidery work. Perfect for weddings." },
+    { id: "f10", hubId: "fashion", name: "Winter Woolen Gloves", price: 500, rating: 4.3, reviews: 90, seller: "Street Vendor", stock: 100, image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=300&q=80", description: "Warm knitted gloves. Touchscreen compatible fingertips." },
+
+    // --- PRODUCTS/GADGETS HUB ---
     { id: "p1", hubId: "products", name: "Ultima Watch Magic", price: 3599, rating: 4.5, reviews: 500, seller: "Ultima Lifestyle", stock: 100, image: "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?auto=format&fit=crop&w=300&q=80", description: "BT Calling, 1.83 Display, Nepali Brand." },
-    { id: "p2", hubId: "products", name: "Boat Airdopes 141", price: 2999, rating: 4.4, reviews: 1000, seller: "TeleTalk", stock: 200, image: "https://images.unsplash.com/photo-1572569028738-411a56103324?auto=format&fit=crop&w=300&q=80", description: "42 Hours Playback, Beast Mode, ENx Technology." }
+    { id: "p2", hubId: "products", name: "Boat Airdopes 141", price: 2999, rating: 4.4, reviews: 1000, seller: "TeleTalk", stock: 200, image: "https://images.unsplash.com/photo-1572569028738-411a56103324?auto=format&fit=crop&w=300&q=80", description: "42 Hours Playback, Beast Mode, ENx Technology." },
+    { id: "p3", hubId: "products", name: "JBL Flip 6 Speaker", price: 16500, rating: 4.8, reviews: 150, seller: "EvoStore", stock: 30, image: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?auto=format&fit=crop&w=300&q=80", description: "Powerful sound, Waterproof IP67, 12H Playtime." },
+    { id: "p4", hubId: "products", name: "Sony WH-1000XM5", price: 52000, rating: 4.9, reviews: 40, seller: "Nepa Hima", stock: 10, image: "https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?auto=format&fit=crop&w=300&q=80", description: "Industry leading noise cancellation. 30H battery." },
+    { id: "p5", hubId: "products", name: "GoPro Hero 11 Black", price: 55000, rating: 4.7, reviews: 60, seller: "Icefall Technologies", stock: 15, image: "https://images.unsplash.com/photo-1565849904461-04a58ad377e0?auto=format&fit=crop&w=300&q=80", description: "HyperSmooth 5.0, 5.3K60 Video, Waterproof." },
+    { id: "p6", hubId: "products", name: "Anker PowerCore 20k", price: 6500, rating: 4.6, reviews: 200, seller: "Anker Nepal", stock: 80, image: "https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?auto=format&fit=crop&w=300&q=80", description: "20,000mAh capacity. Fast charging for phones." },
+    { id: "p7", hubId: "products", name: "Mi Smart Bulb", price: 1500, rating: 4.3, reviews: 300, seller: "Vatsal Impex", stock: 100, image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=300&q=80", description: "16M Colors, WiFi control, Voice assistant compatible." },
+    { id: "p8", hubId: "products", name: "Keychron K2 V2", price: 12000, rating: 4.8, reviews: 25, seller: "Backseat Gaming", stock: 20, image: "https://images.unsplash.com/photo-1595225476474-87563907a212?auto=format&fit=crop&w=300&q=80", description: "Wireless Mechanical Keyboard. Hot-swappable RGB." },
+    { id: "p9", hubId: "products", name: "Logitech G502 Hero", price: 7000, rating: 4.7, reviews: 100, seller: "Interactive", stock: 40, image: "https://images.unsplash.com/photo-1527814050087-3793815479db?auto=format&fit=crop&w=300&q=80", description: "High performance gaming mouse. 25K Sensor." },
+    { id: "p10", hubId: "products", name: "DJI Mini 3 Drone", price: 85000, rating: 4.8, reviews: 10, seller: "Oliz Store", stock: 5, image: "https://images.unsplash.com/photo-1473968512647-3e447244af8f?auto=format&fit=crop&w=300&q=80", description: "Under 249g, 4K HDR Video, True Vertical Shooting." },
+
+    // --- REAL ESTATE (Already Added) ---
+    { id: "r1", hubId: "realstate", name: "Land for Sale in Imadol", price: 3500000, rating: 4.5, reviews: 2, seller: "Nepal Land", stock: 1, image: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=300&q=80", description: "4 Aana prime residential land. Near Krishna Mandir, 13ft road access. Great for building immediate house. Price per Aana." },
+    { id: "r2", hubId: "realstate", name: "2.5 Storey House in Bhaisepati", price: 35000000, rating: 4.9, reviews: 5, seller: "Kathmandu Homes", stock: 1, image: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=300&q=80", description: "Luxury modern house. 5 Bedroom, 4 Bathroom, Modular Kitchen, Parking for 2 cars. 6 Aana land area. Peaceful VIP colony." },
+    { id: "r3", hubId: "realstate", name: "Commercial Shutter in New Road", price: 1500000, rating: 4.2, reviews: 10, seller: "City Rentals", stock: 1, image: "https://images.unsplash.com/photo-1519643381401-22c77e60520e?auto=format&fit=crop&w=300&q=80", description: "Prime business location. Ground floor shutter available for lease transfer. High footfall area. Price is goodwill amount." },
+    { id: "r4", hubId: "realstate", name: "3BHK Apartment in Downtown", price: 12000000, rating: 4.6, reviews: 8, seller: "Civil Homes", stock: 2, image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=300&q=80", description: "Fully furnished 3 bedroom apartment in Dhapakhel. Community gym, swimming pool, and 24/7 security. 8th Floor with city view." },
+    { id: "r5", hubId: "realstate", name: "5 Aana Land in Budhanilkantha", price: 4500000, rating: 4.7, reviews: 3, seller: "Green City Real Estate", stock: 4, image: "https://images.unsplash.com/photo-1592595896551-12b371d546d5?auto=format&fit=crop&w=300&q=80", description: "Peaceful residential area near Shivapuri park. 16ft road access. Perfect for dream home. Price per Aana." },
+    { id: "r6", hubId: "realstate", name: "Office Space in Thapathali", price: 25000000, rating: 4.3, reviews: 1, seller: "Corporate Spaces", stock: 1, image: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=300&q=80", description: "1500 sq ft office space in Trade Tower. Ready to move in partition. High-speed internet infrastructure. Ideal for IT companies." },
+    { id: "r7", hubId: "realstate", name: "Modern Villa in Tokha", price: 28000000, rating: 4.9, reviews: 4, seller: "Urban Developers", stock: 1, image: "https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=300&q=80", description: "Beautiful bungalow with garden space. 4 Bedrooms, modular kitchen, solar water heating. Earthquake resistant structure." },
+    { id: "r8", hubId: "realstate", name: "Budget Plot in Bhaktapur", price: 2200000, rating: 4.0, reviews: 15, seller: "Bhaktapur Lands", stock: 5, image: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=300&q=80", description: "Affordable land near Suryabinayak. 13ft road. Expanding residential area. Great for investment. Price per Aana." },
+    { id: "r9", hubId: "realstate", name: "Hotel for Sale in Pokhara", price: 85000000, rating: 4.5, reviews: 2, seller: "Hospitality Nepal", stock: 1, image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=300&q=80", description: "Running hotel in Lakeside. 12 Rooms, rooftop restaurant, panoramic lake view. Great ROI investment." },
+    { id: "r10", hubId: "realstate", name: "1 Ropani Agriculture Land", price: 8000000, rating: 4.1, reviews: 0, seller: "Agri Nepal", stock: 1, image: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=300&q=80", description: "Fertile land in Chitwan suitable for farming or resort. Road access available. Water irrigation facility." },
+    { id: "r11", hubId: "realstate", name: "Commercial Building in Butwal", price: 55000000, rating: 4.4, reviews: 1, seller: "Western Properties", stock: 1, image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=300&q=80", description: "5 Storey commercial complex at highway. Currently rented to banks and offices. High rental income." },
+    { id: "r12", hubId: "realstate", name: "Furnished Flat in Lalitpur", price: 15000000, rating: 4.6, reviews: 6, seller: "Patan Housing", stock: 3, image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=300&q=80", description: "2BHK apartment near Patan Durbar Square. Traditional architecture mixed with modern amenities. Perfect for Airbnb." }
 ];
 
 const INITIAL_VIDEOS: Video[] = [
@@ -115,6 +176,12 @@ const INITIAL_VIDEOS: Video[] = [
     { id: "v2", title: "AI Tools Mastery", description: "Master the 16+ AI tools available.", embedUrl: "https://www.youtube.com/embed/LXb3EKWsInQ", thumbnail: "https://img.youtube.com/vi/LXb3EKWsInQ/0.jpg", duration: "15:30", views: 850 },
     { id: "v3", title: "Future of VR Shopping", description: "How VR is changing e-commerce.", embedUrl: "https://www.youtube.com/embed/f3A59g1C2qQ", thumbnail: "https://img.youtube.com/vi/f3A59g1C2qQ/0.jpg", duration: "08:20", views: 2300 },
     { id: "v4", title: "Coding in the Metaverse", description: "Building 3D web apps with Three.js.", embedUrl: "https://www.youtube.com/embed/Q6q1d8s7JMA", thumbnail: "https://img.youtube.com/vi/Q6q1d8s7JMA/0.jpg", duration: "25:10", views: 5000 },
+    { id: "v5", title: "AI in 2024", description: "What to expect from Artificial Intelligence.", embedUrl: "https://www.youtube.com/embed/5NgNicANyqM", thumbnail: "https://img.youtube.com/vi/5NgNicANyqM/0.jpg", duration: "12:15", views: 3400 },
+    { id: "v6", title: "Web Development Roadmap", description: "How to become a developer in Nepal.", embedUrl: "https://www.youtube.com/embed/zJSY8tbf_ys", thumbnail: "https://img.youtube.com/vi/zJSY8tbf_ys/0.jpg", duration: "18:40", views: 15000 },
+    { id: "v7", title: "Learn React in 10 Min", description: "Quick crash course for beginners.", embedUrl: "https://www.youtube.com/embed/w7ejDZ8SWv8", thumbnail: "https://img.youtube.com/vi/w7ejDZ8SWv8/0.jpg", duration: "10:00", views: 8900 },
+    { id: "v8", title: "Cybersecurity Basics", description: "Protect yourself online.", embedUrl: "https://www.youtube.com/embed/inWWhr5tnEA", thumbnail: "https://img.youtube.com/vi/inWWhr5tnEA/0.jpg", duration: "14:20", views: 2100 },
+    { id: "v9", title: "Blockchain Explained", description: "Understanding Crypto and Web3.", embedUrl: "https://www.youtube.com/embed/SSo_EIwHSd4", thumbnail: "https://img.youtube.com/vi/SSo_EIwHSd4/0.jpg", duration: "09:50", views: 4500 },
+    { id: "v10", title: "UX Design Principles", description: "Create better user experiences.", embedUrl: "https://www.youtube.com/embed/68xK193f550", thumbnail: "https://img.youtube.com/vi/68xK193f550/0.jpg", duration: "11:30", views: 6000 }
 ];
 
 const AI_TOOLS = [
@@ -675,7 +742,7 @@ function Header({ cartCount, openCart, toggleChat, user, openAuth, openProfile, 
 
 function HubOverlay({ hub, onClose, onProductClick, products, videos, initialFilters = {} }: any) {
   const [searchTerm, setSearchTerm] = useState(initialFilters.searchTerm || "");
-  const [priceRange, setPriceRange] = useState([0, 500000]);
+  const [priceRange, setPriceRange] = useState([0, 100000000]);
   const [minRating, setMinRating] = useState(0);
   const [sortBy, setSortBy] = useState(initialFilters.sortBy || "recommended");
   const [currentPage, setCurrentPage] = useState(1);
@@ -1184,8 +1251,17 @@ function SolarSystemScene({ onHubSelect, isPaused, mode }: { onHubSelect: (h: Hu
         if (mode === 'cinematic' && orbitControls && !warpRef.current.active) { 
             if (moveState.current.rotX !== 0 || moveState.current.rotY !== 0) {
                  orbitControls.autoRotate = false;
-                 orbitControls.azimuthAngle -= moveState.current.rotY * 0.05;
-                 orbitControls.polarAngle -= moveState.current.rotX * 0.05;
+                 // Manually update camera position based on spherical coordinates
+                 const offset = new THREE.Vector3();
+                 offset.copy(camera.position).sub(orbitControls.target);
+                 const spherical = new THREE.Spherical();
+                 spherical.setFromVector3(offset);
+                 spherical.theta -= moveState.current.rotY * 0.05;
+                 spherical.phi -= moveState.current.rotX * 0.05;
+                 spherical.makeSafe();
+                 offset.setFromSpherical(spherical);
+                 camera.position.copy(orbitControls.target).add(offset);
+                 camera.lookAt(orbitControls.target);
             } else {
                  orbitControls.autoRotate = true;
             }
@@ -1231,7 +1307,7 @@ function SolarSystemScene({ onHubSelect, isPaused, mode }: { onHubSelect: (h: Hu
                 h.mesh.position.z = Math.sin(h.angle) * h.data.distance;
                 h.mesh.position.y = 0; 
                 h.mesh.rotation.y += 0.005;
-                if(h.geometryType === 'torus' || h.geometryType === 'icosahedron') h.mesh.rotation.x += 0.005;
+                if(h.data.geometryType === 'torus' || h.data.geometryType === 'icosahedron') h.mesh.rotation.x += 0.005;
             });
             core.rotation.y += 0.002; 
             starMesh.rotation.y -= 0.0001; 
